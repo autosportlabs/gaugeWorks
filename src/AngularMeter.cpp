@@ -11,11 +11,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
+#include <wx/wx.h>
 
 #include <wx/image.h>
 #include <math.h>
@@ -137,11 +133,13 @@ void AngularMeter::SetWarningThreshold(int val){
 
 	_scaledWarningValue = GetScaledValue( val );
 	_realWarningValue = val;
+	Refresh();
 }
 
 void AngularMeter::SetAlertThreshold(int val){
 	_scaledAlertValue = GetScaledValue( val );
 	_realAlertValue = val;	
+	Refresh();
 }
 
 
