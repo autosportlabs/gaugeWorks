@@ -24,24 +24,24 @@
 <macros/>
 </toolChain>
 </configuration>
-<configuration artifactExtension="a" artifactName="gaugeWorks" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.lib.release.325074667" name="libs" parent="cdt.managedbuild.config.gnu.cygwin.lib.release">
-<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.51836949" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release.925717052" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release.60929406" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release">
-<option id="gnu.cpp.compiler.option.preprocessor.def.1815216562" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+<configuration artifactExtension="a" artifactName="gaugeWorks" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.lib.release">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.875390480" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release.547013714" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release.629901942" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release">
+<option id="gnu.cpp.compiler.option.preprocessor.def.943314981" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="WX_PRECOMP"/>
 <listOptionValue builtIn="false" value="__WXMSW__"/>
 <listOptionValue builtIn="false" value="NO_GCC_PRAGMA"/>
 </option>
-<option id="gnu.cpp.compiler.option.include.paths.1034564964" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<option id="gnu.cpp.compiler.option.include.paths.1904819989" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/msw-release/lib/wx/include/msw-ansi-release-static-2.6"/>
 <listOptionValue builtIn="false" value="../include"/>
 <listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/include"/>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.852632085" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mthreads" valueType="string"/>
+<option id="gnu.cpp.compiler.option.other.other.746974582" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mthreads" valueType="string"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release.1359228215" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release"/>
-<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.1259867272" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release"/>
+<tool id="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release.1117325475" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.cygwin.lib.release"/>
+<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release.1580157373" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.lib.release"/>
 <macros/>
 </toolChain>
 </configuration>
