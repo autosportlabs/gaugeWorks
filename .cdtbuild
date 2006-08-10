@@ -15,6 +15,7 @@
 </option>
 <option id="gnu.cpp.compiler.option.include.paths.282995008" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/msw-debug/lib/wx/include/msw-ansi-debug-static-2.6"/>
+<listOptionValue builtIn="false" value="../include"/>
 <listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/include"/>
 </option>
 <option id="gnu.cpp.compiler.option.other.other.1677033897" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mthreads" valueType="string"/>
