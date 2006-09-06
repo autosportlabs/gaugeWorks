@@ -10,21 +10,43 @@
 class ChartScale{
 
 	public:
-		ChartScale(double min, double max, wxString label)
-			: minValue(min), maxValue(max), scaleLabel(label)
+		enum UNITS_DISPLAY_ORIENTATION{
+			ORIENTATION_LEFT,
+			ORIENTATION_RIGHT	
+		};
+		
+		ChartScale(	double min, 
+					double max, 
+					double step, 
+					UNITS_DISPLAY_ORIENTATION orientation, 
+					wxString label)
+			: 	minValue(min), 
+				maxValue(max), 
+				stepInterval(step), 
+				displayOrientation(orientation), 
+				scaleLabel(label)
 		{}
 		ChartScale(const ChartScale &rhs){
 			minValue = rhs.minValue;
 			maxValue = rhs.maxValue;
-			scaleLabel = rhs.scaleLabel;	
+			scaleLabel = rhs.scaleLabel;
+			stepInterval = rhs.stepInterval;
+			displayOrientation = rhs.displayOrientation;	
 		}
 		ChartScale & operator=(const ChartScale &rhs){
 			minValue = rhs.minValue;
 			maxValue = rhs.maxValue;
 			scaleLabel = rhs.scaleLabel;
+			stepInterval = rhs.stepInterval;
+			displayOrientation = rhs.displayOrientation;
+			
 			return *this;	
 		}
 		
+
+		
+		UNITS_DISPLAY_ORIENTATION displayOrientation;
+		double stepInterval;
 		double minValue;
 		double maxValue;
 		wxString scaleLabel;
@@ -75,8 +97,11 @@ class StripChart : public wxWindow
 		
 		void SetChartHistorySize(unsigned int chartHistorySize);
 		
-		int AddScale(double minValue, double maxValue, wxString label);
-		int AddLogItemType(int scaleId, wxColor lineColor, wxString label);
+		int AddScale(ChartScale *scale);
+		ChartScale *GetScale(int id);
+		
+		int AddLogItemType(LogItemType *logItemType);
+		LogItemType *GetLogItemType(int id);
 		
 		void LogData(StripChartLogItem *values);
 		
@@ -89,6 +114,7 @@ class StripChart : public wxWindow
 	private:
 	
 		void DrawGrid(wxMemoryDC &dc);
+		void DrawUnits(wxMemoryDC &dc);
 		
 		ChartScales			_chartScales;
 		LogItemBuffer		_dataBuffer;

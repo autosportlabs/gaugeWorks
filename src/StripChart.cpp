@@ -4,6 +4,8 @@
 
 #include <wx/arrimpl.cpp> 
 
+#define UNITS_LABEL_SPACING 2
+
 //the data buffer
 WX_DEFINE_OBJARRAY(ChartScales);
 WX_DEFINE_OBJARRAY(LogItemTypes);
@@ -43,14 +45,22 @@ StripChart::~StripChart(){
 }
 
 
-int StripChart::AddScale(double minValue, double maxValue, wxString label){
-	_chartScales.Add(new ChartScale(minValue, maxValue, label));
+int StripChart::AddScale(ChartScale *scale){
+	_chartScales.Add(scale);
 	return _chartScales.size() - 1;
 }
 
-int StripChart::AddLogItemType(int scaleId, wxColor lineColor, wxString label){
-	_logItemTypes.Add(new LogItemType(scaleId, lineColor, label));
+ChartScale * StripChart::GetScale(int id){
+	return &_chartScales[id];	
+}
+
+int StripChart::AddLogItemType(LogItemType *logItemType){
+	_logItemTypes.Add(logItemType);
 	return _logItemTypes.size() - 1;	
+}
+
+LogItemType* StripChart::GetLogItemType(int id){
+	return &_logItemTypes[id];	
 }
 
 void StripChart::LogData(StripChartLogItem *values){
@@ -91,6 +101,7 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	dc.Clear();
 	
 	DrawGrid(dc);
+	DrawUnits(dc);
 
 	unsigned int dataBufferSize = _dataBuffer.size();
 	unsigned int itemTypeSize = _logItemTypes.size();
@@ -105,7 +116,7 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		
 		int currentX = w - dataBufferSize;
 		
-		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType.lineColor, 2, wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType.lineColor, 1, wxSOLID));
 		
 		int lastX = currentX;
 		int lastY;
@@ -133,6 +144,111 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
 	
+}
+
+void StripChart::DrawUnits(wxMemoryDC &dc){
+	
+	unsigned int logItemTypes = _logItemTypes.size();
+	
+	int leftOrientationEdge = 0;
+	int rightOrientationEdge = _currentWidth - 1;
+	
+	
+	wxFont labelFont = GetFont();
+	for (unsigned int i = 0; i < logItemTypes; i++){
+		
+		LogItemType *logItemType = &_logItemTypes[i];
+		ChartScale *scale = &_chartScales[logItemType->scaleId];
+		
+		ChartScale::UNITS_DISPLAY_ORIENTATION orientation = scale->displayOrientation;
+		double stepInterval = scale->stepInterval;
+		double minValue = scale->minValue;
+		double maxValue = scale->maxValue;
+		
+		dc.SetPen(*wxThePenList->FindOrCreatePen(logItemType->lineColor, 1, wxSOLID));
+
+		wxString chartLabel = logItemType->typeLabel + " ( " + scale->scaleLabel + " )";
+		int labelWidth,labelHeight,descent,externalLeading;
+		dc.GetTextExtent(chartLabel, &labelHeight, &labelWidth, &descent, &externalLeading, &labelFont);
+
+
+		dc.SetTextForeground(logItemType->lineColor);
+	
+		int verticalMiddleOfChart = _currentHeight / 2;
+		
+		int tickFromX = 0;
+		int tickToX = 0; 
+		
+		bool showLabels;
+		showLabels = (_currentHeight > labelHeight * 2  );
+		switch (orientation){
+			case ChartScale::ORIENTATION_LEFT:
+			{
+				if (showLabels) dc.DrawRotatedText(chartLabel,leftOrientationEdge, verticalMiddleOfChart + (labelHeight / 2),90);
+				leftOrientationEdge += labelWidth;
+				tickFromX = leftOrientationEdge;
+				leftOrientationEdge += 5;
+				tickToX = leftOrientationEdge;
+				dc.DrawLine(tickFromX, 0 , tickFromX, _currentHeight);
+				break;
+			}
+			case ChartScale::ORIENTATION_RIGHT:
+			{
+				if (showLabels) dc.DrawRotatedText(chartLabel, rightOrientationEdge, verticalMiddleOfChart - (labelHeight / 2), 270);
+				rightOrientationEdge -= labelWidth;
+				tickToX = rightOrientationEdge;
+				rightOrientationEdge -= 5;
+				tickFromX = rightOrientationEdge;
+				dc.DrawLine(tickToX, 0 , tickToX, _currentHeight);
+				break;
+			}	
+		}
+		
+		
+		bool labelOn = false;
+		int tickLabelWidth,tickLabelHeight,tickDescent,tickExternalLeading;
+		for (double tick = minValue; tick <=maxValue; tick = tick + stepInterval){
+			
+			double percentageOfMax = (tick - minValue) / (maxValue - minValue);
+			int y = _currentHeight - (int)(((double)_currentHeight) * percentageOfMax);
+			
+			dc.DrawLine(tickFromX, y, tickToX, y);
+			
+			if (labelOn){
+				wxString tickLabel;
+				tickLabel.Printf("%d",(int)tick);
+				dc.GetTextExtent(chartLabel, &tickLabelHeight, &tickLabelWidth, &tickDescent, &tickExternalLeading, &labelFont);
+				if (showLabels){
+					switch (orientation){
+						case ChartScale::ORIENTATION_LEFT:
+						{
+							dc.DrawRotatedText(tickLabel, leftOrientationEdge, y + (tickLabelWidth / 2), 90);
+							break;				
+						}
+						case ChartScale::ORIENTATION_RIGHT:
+						{
+							dc.DrawRotatedText(tickLabel, rightOrientationEdge, y - (tickLabelWidth / 2), 270);
+							break;
+						}	
+					}
+				}
+			}
+			labelOn = !labelOn;
+		}
+		switch (orientation){
+			case ChartScale::ORIENTATION_LEFT:
+			{
+				leftOrientationEdge += (tickLabelWidth);
+				break;	
+			}
+			case ChartScale::ORIENTATION_RIGHT:
+			{
+				rightOrientationEdge -= (tickLabelWidth);
+				break;
+			}
+				
+		}
+	}
 }
 
 void StripChart::DrawGrid(wxMemoryDC &dc){
