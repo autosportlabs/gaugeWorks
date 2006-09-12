@@ -27,6 +27,8 @@ public:
 
 	void AddMajorTick(int value);
 	void AddMinorTick(int value);
+	void ClearTicks();
+	
 	
 	void SetMajorTickDisplayDivisor(int divisor) { _majorTickDivisor = divisor; };
 	
@@ -37,7 +39,9 @@ public:
 	void SetMajorTickColor(wxColour color){ _majorTickColor = color; };
 	void SetMinorTickColor(wxColour color){ _minorTickColor = color; };
 	void SetLabelTextColor(wxColour color){ _labelTextColor = color; };
+	void SetValueTextColor(wxColour color){ _valueTextColor = color; };
 	void SetLabelFont(wxFont &font) { _labelFont = font; };
+	void SetValueFont(wxFont &font) { _valueFont = font; };
 	void SetMajorTickTextColor(wxColour color){ _majorTickTextColor = color; };
 	
 	void SetDialColor(wxColour colour) { _dialColor = colour; };
@@ -63,6 +67,8 @@ private:
 	void	DrawNeedle(wxDC &dc) ;
 	void	DrawSectors(wxDC &dc) ;
 	void 	DrawLabel(wxDC &dc);
+	void	DrawValue(wxDC &dc);
+	
 	
 	wxWindowID	 GetID() { return _windowId ; } ;
 
@@ -85,10 +91,12 @@ private:
 	wxBitmap 	*_memBitmap ;
 	wxFont 		_majorTickFont;
 	wxFont 		_labelFont;
+	wxFont		_valueFont;
 	
 	wxColour 	_majorTickColor;
 	wxColour	_minorTickColor;
 	wxColour 	_labelTextColor;
+	wxColour	_valueTextColor;
 	wxColour 	_majorTickTextColor;
 	wxColour 	_needleColor;
 	wxColour 	_backgroundColor;

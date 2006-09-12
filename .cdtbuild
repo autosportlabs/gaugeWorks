@@ -5,6 +5,7 @@
 <project id="gaugeWorks.cdt.managedbuild.target.gnu.cygwin.lib.514101096" name="Static Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.lib">
 <configuration artifactExtension="a" artifactName="gaugeWorks" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.lib.debug">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug.716305150" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.debug">
+<builder arguments="-k -j3" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug.390171819" name="Gnu Make.Debug" superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.debug"/>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug.243240457" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.debug"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug.1308317989" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.debug">
 <option id="gnu.cpp.compiler.option.preprocessor.def.767669118" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -27,6 +28,7 @@
 </configuration>
 <configuration artifactExtension="a" artifactName="gaugeWorks" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.lib.release">
 <toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.lib.release.875390480" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.lib.release">
+<builder arguments="-k -j3" id="cdt.managedbuild.target.gnu.builder.cygwin.lib.release.1929158633" name="Gnu Make.Release" superClass="cdt.managedbuild.target.gnu.builder.cygwin.lib.release"/>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release.547013714" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.lib.release"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release.629901942" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.lib.release">
 <option id="gnu.cpp.compiler.option.preprocessor.def.943314981" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">

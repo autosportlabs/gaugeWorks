@@ -71,6 +71,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
 	_warningColor = wxColor(254, 216, 1);
 	
 	_labelTextColor = *wxWHITE;
+	_valueTextColor = *wxWHITE;
 	_majorTickColor = *wxWHITE;
 	_minorTickColor = *wxWHITE;
 	_majorTickTextColor = *wxWHITE;
@@ -78,6 +79,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
 	_PI = 4.0 * atan(1.0);
 	_majorTickFont = *wxSWISS_FONT;	//font
 	_labelFont = *wxSWISS_FONT;
+	_valueFont = *wxSWISS_FONT;
 	
 	_shouldDrawCurrent = true ;
 
@@ -192,8 +194,17 @@ void AngularMeter::OnPaint(wxPaintEvent &event)
 
 	DrawLabel(dc);
 
+	//testo valore
+	if (_shouldDrawCurrent) DrawValue(dc);
+	
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
+}
+
+void AngularMeter::ClearTicks(){
+	
+	_majorTicks = 0;
+	_minorTicks = 0;	
 }
 
 void AngularMeter::AddMajorTick(int value){
@@ -418,6 +429,23 @@ void AngularMeter::DrawTicks(wxDC &dc)
 	}
 	
 }
+
+void AngularMeter::DrawValue(wxDC &dc){
+	
+	dc.SetTextForeground(_valueTextColor);
+	dc.SetFont(_valueFont);
+	
+	int w,h;
+	GetClientSize(&w, &h);
+
+	//draw label
+	int vw,vh;
+	wxString valuetext;
+	valuetext.Printf("%d",_realVal);
+	dc.GetTextExtent(valuetext, &vw, &vh);
+	dc.DrawText(valuetext, (w / 2) - 10, (h / 2) - (vh * 1.3f));	
+}
+
 void AngularMeter::DrawLabel(wxDC &dc){
 	
 	dc.SetTextForeground(_labelTextColor);
@@ -426,17 +454,8 @@ void AngularMeter::DrawLabel(wxDC &dc){
 	int w,h;
 	GetClientSize(&w, &h);
 	
-	//testo valore
-	if (_shouldDrawCurrent) 
-	{
-		wxString valuetext;
-		valuetext.Printf("%d",_realVal);
-		dc.DrawText(valuetext, (w / 2) - 10, (h / 2) + 10);
-	}
-	
 	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);
-	
-	dc.DrawText(_label, (w / 2) - (lw / 2), h - lh);
+	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (lh * 0.7f));
 }

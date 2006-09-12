@@ -374,8 +374,9 @@ void LCDDisplay::SetNumberDigits( int ndigits )	//numero cifre
 
 void LCDDisplay::SetValue( wxString value )
 {
+	if (value == mValue) return;
+	
 	mValue = value;
-
 	Refresh( false );
 }
 
