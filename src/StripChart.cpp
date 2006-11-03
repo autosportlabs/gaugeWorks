@@ -4,7 +4,11 @@
 
 #include <wx/arrimpl.cpp> 
 
-#define UNITS_LABEL_SPACING 2
+#define UNITS_LABEL_SPACING 	2
+#define GRID_SIZE 				20
+#define DEFAULT_ZOOM 			100
+#define MIN_ZOOM				25
+
 
 //the data buffer
 WX_DEFINE_OBJARRAY(ChartScales);
@@ -17,14 +21,22 @@ WX_DEFINE_OBJARRAY(LogItemBuffer);
 BEGIN_EVENT_TABLE( StripChart, wxWindow )
 	EVT_PAINT( StripChart::OnPaint )
 	EVT_SIZE( StripChart::OnSize )
+    EVT_ERASE_BACKGROUND(StripChart::OnEraseBackground)	
 END_EVENT_TABLE()
 
+
+StripChart::StripChart(): wxWindow(), 
+	_zoomPercentage(DEFAULT_ZOOM),
+	_showScale(true)
+{}
 
 StripChart::StripChart(		wxWindow *parent,
 							wxWindowID id,
 							const wxPoint &pos,
 							const wxSize &size)
-							: wxWindow(parent, id, pos, size)
+							: wxWindow(parent, id, pos, size),
+								_zoomPercentage(DEFAULT_ZOOM),
+								_showScale(true)
 							
 {
 	if (parent){
@@ -44,6 +56,25 @@ StripChart::~StripChart(){
 	delete (_memBitmap);
 }
 
+void StripChart::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
+{
+  // Do nothing, to avoid flashing.
+}
+
+int StripChart::GetZoom(){
+	return _zoomPercentage;
+}
+
+void StripChart::SetZoom(int zoomPercentage){
+	_zoomPercentage = zoomPercentage >= MIN_ZOOM ? zoomPercentage : MIN_ZOOM;
+	Refresh();
+}
+	
+
+void StripChart::ClearScales(){
+	_chartScales.Clear();
+	ClearLogItemTypes();	
+}
 
 int StripChart::AddScale(ChartScale *scale){
 	_chartScales.Add(scale);
@@ -56,7 +87,39 @@ ChartScale * StripChart::GetScale(int id){
 
 int StripChart::AddLogItemType(LogItemType *logItemType){
 	_logItemTypes.Add(logItemType);
-	return _logItemTypes.size() - 1;	
+	
+	//default everything to minvalue
+	ChartScale *scale = &_chartScales[logItemType->scaleId];
+	int minValue = scale->minValue;
+	
+	//pad the existing log data
+	int size = _dataBuffer.size();
+	for (int i = 0; i < size; i++){
+		StripChartLogItem *logItem = &_dataBuffer[i];
+		logItem->Add(minValue);	
+	}
+	return _logItemTypes.size() - 1;
+}
+
+
+void StripChart::ClearLogItemTypes(){
+	_logItemTypes.Clear();
+	ClearLog();
+}
+
+
+void StripChart::RemoveLogItemType(int id){
+
+	int size = _dataBuffer.size();
+	
+	//purge the existing log items
+	for (int i = 0; i < size; i++){
+		StripChartLogItem *logItem = &_dataBuffer[i];
+		logItem->RemoveAt(id);
+	}
+	//and remove the log item type
+	_logItemTypes.RemoveAt(id);	
+	
 }
 
 LogItemType* StripChart::GetLogItemType(int id){
@@ -71,6 +134,18 @@ void StripChart::LogData(StripChartLogItem *values){
 	Refresh();
 }
 
+void StripChart::ClearLog(){
+	_dataBuffer.Clear();
+	Refresh();	
+}
+
+void StripChart::ShowScale(bool showScale){
+	_showScale = showScale;
+}
+
+bool StripChart::GetShowScale(){
+	return _showScale;
+}
 
 void StripChart::OnSize(wxSizeEvent &event){
 	Refresh();
@@ -101,10 +176,12 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	dc.Clear();
 	
 	DrawGrid(dc);
-	DrawUnits(dc);
+	if (_showScale) DrawScale(dc);
 
 	unsigned int dataBufferSize = _dataBuffer.size();
 	unsigned int itemTypeSize = _logItemTypes.size();
+	
+	float zoomFactor = (float)_zoomPercentage / 100;
 	
 	for (unsigned int typeId = 0; typeId < itemTypeSize; typeId++){
 		
@@ -114,30 +191,30 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		double minValue = scale.minValue;
 		double maxValue = scale.maxValue;
 		
-		int currentX = w - dataBufferSize;
+		float currentX = (float)w;
 		
 		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType.lineColor, 1, wxSOLID));
 		
-		int lastX = currentX;
+		int lastX = (int)currentX;
 		int lastY;
 		if (dataBufferSize > 0){
-			StripChartLogItem logItem = _dataBuffer[0];
+			StripChartLogItem logItem = _dataBuffer[dataBufferSize - 1];
 			double loggedValue = logItem[typeId];
 			double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
 			lastY = h - (int)(((double)h) * percentageOfMax);
-		}
-		for (unsigned int i = 1; i < dataBufferSize; i++){
-			StripChartLogItem logItem = _dataBuffer[i];
-			double loggedValue = logItem[typeId];
-			
-			double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
-			
-			int y = h - (int)(((double)h) * percentageOfMax);
-			
-			dc.DrawLine(lastX, lastY, currentX, y);
-			lastX = currentX;
-			lastY = y;
-			currentX++;		
+			for (int i = dataBufferSize - 1; i >= 0; i--){
+				StripChartLogItem logItem = _dataBuffer[i];
+				double loggedValue = logItem[typeId];
+				
+				double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
+				
+				int y = h - (int)(((double)h) * percentageOfMax);
+				
+				dc.DrawLine(lastX, lastY, (int)currentX, y);
+				lastX = (int)currentX;
+				lastY = y;
+				currentX -= zoomFactor;		
+			}
 		}
 	}
 
@@ -146,7 +223,7 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	
 }
 
-void StripChart::DrawUnits(wxMemoryDC &dc){
+void StripChart::DrawScale(wxMemoryDC &dc){
 	
 	unsigned int logItemTypes = _logItemTypes.size();
 	
@@ -258,7 +335,11 @@ void StripChart::DrawGrid(wxMemoryDC &dc){
 	int width = _currentWidth;
 	int height = _currentHeight;
 	
-	for (int x = 0; x < width; x+=20){
+	float zoomFactor = (float)_zoomPercentage / 100;
+	
+	int gridIncrement = GRID_SIZE * zoomFactor;
+	
+	for (int x = width; x >=0 ; x -= gridIncrement){
 		dc.DrawLine(x, 0, x, height);
 	}
 	
