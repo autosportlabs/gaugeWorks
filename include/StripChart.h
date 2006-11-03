@@ -141,8 +141,8 @@ class StripChart : public wxWindow
 		int					_zoomPercentage;
 		int					_currentWidth;
 		int					_currentHeight;
+		wxBitmap 			*_memBitmap;
 		wxColor				_backgroundColor;
-		wxBitmap 			*_memBitmap ;
 		bool				_showScale;
 		
 	
