@@ -12,7 +12,6 @@
 
 //the data buffer
 WX_DEFINE_OBJARRAY(ChartScales);
-WX_DEFINE_OBJARRAY(LogItemTypes);
 WX_DEFINE_OBJARRAY(LogItemBuffer);
 
 
@@ -21,6 +20,9 @@ WX_DEFINE_OBJARRAY(LogItemBuffer);
 BEGIN_EVENT_TABLE( StripChart, wxWindow )
 	EVT_PAINT( StripChart::OnPaint )
 	EVT_SIZE( StripChart::OnSize )
+	EVT_MOTION(StripChart::OnMouseMove)
+	EVT_ENTER_WINDOW(StripChart::OnMouseEnter)
+	EVT_LEAVE_WINDOW(StripChart::OnMouseExit)
     EVT_ERASE_BACKGROUND(StripChart::OnEraseBackground)	
 END_EVENT_TABLE()
 
@@ -56,6 +58,27 @@ StripChart::~StripChart(){
 	delete (_memBitmap);
 }
 
+void StripChart::OnMouseEnter(wxMouseEvent &event){
+
+	_showData = true;
+	_mouseX = event.GetX();
+	_mouseY = event.GetY();
+	Refresh();
+}
+
+void StripChart::OnMouseMove(wxMouseEvent &event){
+	
+	_mouseX = event.GetX();
+	_mouseY = event.GetY();	
+	Refresh();
+}
+
+void StripChart::OnMouseExit(wxMouseEvent &event){
+	
+	_showData = false;
+	Refresh();
+}
+
 void StripChart::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 {
   // Do nothing, to avoid flashing.
@@ -86,7 +109,7 @@ ChartScale * StripChart::GetScale(int id){
 }
 
 int StripChart::AddLogItemType(LogItemType *logItemType){
-	_logItemTypes.Add(logItemType);
+	_logItemTypes[logItemType->typeKey] = logItemType;
 	
 	//default everything to minvalue
 	ChartScale *scale = &_chartScales[logItemType->scaleId];
@@ -96,34 +119,34 @@ int StripChart::AddLogItemType(LogItemType *logItemType){
 	int size = _dataBuffer.size();
 	for (int i = 0; i < size; i++){
 		StripChartLogItem *logItem = &_dataBuffer[i];
-		logItem->Add(minValue);	
+		(*logItem)[logItemType->typeKey] = minValue;	
 	}
 	return _logItemTypes.size() - 1;
 }
 
 
 void StripChart::ClearLogItemTypes(){
-	_logItemTypes.Clear();
+	_logItemTypes.clear();
 	ClearLog();
 }
 
 
-void StripChart::RemoveLogItemType(int id){
+void StripChart::RemoveLogItemType(wxString typeKey){
 
 	int size = _dataBuffer.size();
 	
 	//purge the existing log items
 	for (int i = 0; i < size; i++){
 		StripChartLogItem *logItem = &_dataBuffer[i];
-		logItem->RemoveAt(id);
+		logItem->erase(typeKey);
 	}
 	//and remove the log item type
-	_logItemTypes.RemoveAt(id);	
+	_logItemTypes.erase(typeKey);	
 	
 }
 
-LogItemType* StripChart::GetLogItemType(int id){
-	return &_logItemTypes[id];	
+LogItemType* StripChart::GetLogItemType(wxString typeKey){
+	return _logItemTypes[typeKey];	
 }
 
 void StripChart::LogData(StripChartLogItem *values){
@@ -183,28 +206,32 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	
 	float zoomFactor = (float)_zoomPercentage / 100;
 	
-	for (unsigned int typeId = 0; typeId < itemTypeSize; typeId++){
+	for (LogItemTypes::iterator it = _logItemTypes.begin(); it != _logItemTypes.end(); ++it){
+
+		wxString key = it->first;
 		
-		LogItemType itemType = _logItemTypes[typeId];
-		ChartScale scale = _chartScales[itemType.scaleId];
+		LogItemType *itemType = it->second;
+		
+		ChartScale scale = _chartScales[itemType->scaleId];
 		
 		double minValue = scale.minValue;
 		double maxValue = scale.maxValue;
 		
 		float currentX = (float)w;
 		
-		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType.lineColor, 1, wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType->lineColor, 1, wxSOLID));
 		
 		int lastX = (int)currentX;
 		int lastY;
 		if (dataBufferSize > 0){
 			StripChartLogItem logItem = _dataBuffer[dataBufferSize - 1];
-			double loggedValue = logItem[typeId];
+			double loggedValue = logItem[key];
 			double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
 			lastY = h - (int)(((double)h) * percentageOfMax);
+			
 			for (int i = dataBufferSize - 1; i >= 0; i--){
 				StripChartLogItem logItem = _dataBuffer[i];
-				double loggedValue = logItem[typeId];
+				double loggedValue = logItem[key];
 				
 				double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
 				
@@ -218,9 +245,54 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		}
 	}
 
+	if (_showData) DrawCurrentValues(dc);
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
 	
+}
+
+void StripChart::DrawCurrentValues(wxMemoryDC &dc){
+	
+	//see if data was logged for the mouse location
+	int dataBufferSize = _dataBuffer.size();
+	float zoomFactor = (float)_zoomPercentage / 100.0;
+	int dataBufferIndex = dataBufferSize - (int)(((float)(_currentWidth - _mouseX)) / zoomFactor) - 1;
+	if (dataBufferIndex < 0 || dataBufferIndex >= dataBufferSize) return;
+	
+	
+	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxWHITE, 1, wxSOLID));
+	dc.DrawLine(_mouseX, 0, _mouseX, _currentHeight);
+
+	int currentOffset = 0;
+	StripChartLogItem logItem = _dataBuffer[dataBufferIndex];
+	
+	wxDateTime timestamp = logItem.GetTimestamp();
+	wxTimeSpan span =  (timestamp - wxDateTime::UNow());
+	wxString timeString = wxString::Format("%d seconds",span.GetSeconds().ToLong());
+	
+	
+	wxFont labelFont = GetFont();
+	int labelWidth,labelHeight,descent,externalLeading;
+	dc.GetTextExtent(timeString, &labelHeight, &labelWidth, &descent, &externalLeading, &labelFont);
+	dc.SetTextForeground(*wxWHITE);
+	
+	dc.DrawRotatedText(timeString, _mouseX - labelWidth, _mouseY,90);
+	 
+	for (LogItemTypes::iterator it = _logItemTypes.begin(); it != _logItemTypes.end(); ++it){
+
+		wxString key = it->first;		
+		LogItemType *logItemType = it->second;
+		ChartScale *scale = &_chartScales[logItemType->scaleId];
+		
+		dc.SetTextForeground(logItemType->lineColor);
+
+		int value = logItem[logItemType->typeKey];
+		wxString valueString = logItemType->typeLabel + ": " + wxString::Format("%d",value) + " " +scale->scaleLabel;
+
+		dc.GetTextExtent(valueString, &labelHeight, &labelWidth, &descent, &externalLeading, &labelFont);
+		currentOffset += labelWidth;
+		dc.DrawRotatedText(valueString,_mouseX + 10, _mouseY - currentOffset,0);
+	}
 }
 
 void StripChart::DrawScale(wxMemoryDC &dc){
@@ -232,9 +304,11 @@ void StripChart::DrawScale(wxMemoryDC &dc){
 	
 	
 	wxFont labelFont = GetFont();
-	for (unsigned int i = 0; i < logItemTypes; i++){
-		
-		LogItemType *logItemType = &_logItemTypes[i];
+
+	for (LogItemTypes::iterator it = _logItemTypes.begin(); it != _logItemTypes.end(); ++it){
+
+		wxString key = it->first;		
+		LogItemType *logItemType = it->second;
 		ChartScale *scale = &_chartScales[logItemType->scaleId];
 		
 		ChartScale::UNITS_DISPLAY_ORIENTATION orientation = scale->displayOrientation;

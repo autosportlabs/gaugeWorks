@@ -3,7 +3,9 @@
 
 
 #include <wx/wx.h>
+#include <wx/datetime.h>
 #include <wx/dynarray.h>
+#include <wx/hashmap.h>
 
 
 
@@ -56,6 +58,12 @@ class ChartScale{
 class LogItemType{
 	
 	public: 
+		LogItemType()
+			: scaleId(0),
+				lineColor(wxColor(0,0,0)),
+				typeLabel(""),
+				typeKey("")
+		{}
 		LogItemType(int scaleId, wxColor color, wxString label, wxString key)
 			: 	scaleId(scaleId), 
 				lineColor(color), 
@@ -81,13 +89,30 @@ class LogItemType{
 		wxString 	typeKey;
 };
 
-WX_DEFINE_ARRAY(int, StripChartLogItem);
+WX_DECLARE_STRING_HASH_MAP(int, LogItem);
 
 WX_DECLARE_OBJARRAY(ChartScale, ChartScales);
-WX_DECLARE_OBJARRAY(LogItemType, LogItemTypes);
+WX_DECLARE_STRING_HASH_MAP(LogItemType*, LogItemTypes);
+ 
+
+class StripChartLogItem : public LogItem{
+	
+	public:
+		StripChartLogItem::StripChartLogItem(size_type size = 10) : LogItem(size){ _timestamp = wxDateTime::UNow();}
+		
+		StripChartLogItem::StripChartLogItem(const StripChartLogItem& logItem) : LogItem(logItem){		
+			_timestamp = logItem.GetTimestamp();
+		}
+	
+		wxDateTime GetTimestamp() const { return _timestamp; }
+		
+		void SetTimestamp(wxDateTime timestamp){ _timestamp = timestamp;}
+
+	private:
+		wxDateTime _timestamp;
+};
+
 WX_DECLARE_OBJARRAY(StripChartLogItem, LogItemBuffer);
-
-
 
 class StripChart : public wxWindow
 {
@@ -109,8 +134,8 @@ class StripChart : public wxWindow
 		void ClearScales();
 		void OnEraseBackground(wxEraseEvent& event);
 		int AddLogItemType(LogItemType *logItemType);
-		LogItemType *GetLogItemType(int id);
-		void RemoveLogItemType(int id);
+		LogItemType *GetLogItemType(wxString typeKey);
+		void RemoveLogItemType(wxString typeKey);
 		void ClearLogItemTypes();
 		
 		void LogData(StripChartLogItem *values);
@@ -127,11 +152,15 @@ class StripChart : public wxWindow
 	protected:
 		void OnPaint( wxPaintEvent &event );
 		void OnSize( wxSizeEvent &event );
+		void OnMouseEnter(wxMouseEvent &event);
+		void OnMouseExit(wxMouseEvent &event);
+		void OnMouseMove(wxMouseEvent &event);
 		
 	private:
 	
 		void DrawGrid(wxMemoryDC &dc);
 		void DrawScale(wxMemoryDC &dc);
+		void DrawCurrentValues(wxMemoryDC &dc);
 		
 		ChartScales			_chartScales;
 		LogItemBuffer		_dataBuffer;
@@ -144,6 +173,10 @@ class StripChart : public wxWindow
 		wxBitmap 			*_memBitmap;
 		wxColor				_backgroundColor;
 		bool				_showScale;
+		
+		bool				_showData;
+		int					_mouseX;
+		int					_mouseY;
 		
 	
 		
