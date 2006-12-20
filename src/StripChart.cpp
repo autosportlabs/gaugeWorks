@@ -113,7 +113,7 @@ int StripChart::AddLogItemType(LogItemType *logItemType){
 	
 	//default everything to minvalue
 	ChartScale *scale = &_chartScales[logItemType->scaleId];
-	int minValue = scale->minValue;
+	int minValue = (int)scale->minValue;
 	
 	//pad the existing log data
 	int size = _dataBuffer.size();
@@ -202,9 +202,19 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	if (_showScale) DrawScale(dc);
 
 	unsigned int dataBufferSize = _dataBuffer.size();
-	unsigned int itemTypeSize = _logItemTypes.size();
+	
 	
 	float zoomFactor = (float)_zoomPercentage / 100;
+	
+	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxLIGHT_GREY, 1, wxSHORT_DASH));
+	
+	float currentX = (float)w;
+	for (int i = dataBufferSize - 1; i >= 0; i--){		
+		if (_dataBuffer[i].IsMarked()){
+			dc.DrawLine((int)currentX,0,(int)currentX,h);					
+		}	
+		currentX -= zoomFactor;
+	}
 	
 	for (LogItemTypes::iterator it = _logItemTypes.begin(); it != _logItemTypes.end(); ++it){
 
@@ -217,7 +227,7 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		double minValue = scale.minValue;
 		double maxValue = scale.maxValue;
 		
-		float currentX = (float)w;
+		currentX = (float)w;
 		
 		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType->lineColor, 1, wxSOLID));
 		
@@ -267,8 +277,8 @@ void StripChart::DrawCurrentValues(wxMemoryDC &dc){
 	StripChartLogItem logItem = _dataBuffer[dataBufferIndex];
 	
 	wxDateTime timestamp = logItem.GetTimestamp();
-	wxTimeSpan span =  (timestamp - wxDateTime::UNow());
-	wxString timeString = wxString::Format("%d seconds",span.GetSeconds().ToLong());
+	wxTimeSpan span =  (wxDateTime::UNow() - timestamp);
+	wxString timeString = wxString::Format("%d seconds back",span.GetSeconds().ToLong());
 	
 	
 	wxFont labelFont = GetFont();

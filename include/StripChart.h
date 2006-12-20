@@ -98,18 +98,27 @@ WX_DECLARE_STRING_HASH_MAP(LogItemType*, LogItemTypes);
 class StripChartLogItem : public LogItem{
 	
 	public:
-		StripChartLogItem::StripChartLogItem(size_type size = 10) : LogItem(size){ _timestamp = wxDateTime::UNow();}
+		StripChartLogItem::StripChartLogItem(size_type size = 10) : 
+				LogItem(size),
+				_timestamp(wxDateTime::UNow()),
+				_mark(false)						
+				{}
 		
-		StripChartLogItem::StripChartLogItem(const StripChartLogItem& logItem) : LogItem(logItem){		
-			_timestamp = logItem.GetTimestamp();
-		}
+		StripChartLogItem::StripChartLogItem(const StripChartLogItem& logItem) : 
+				LogItem(logItem),
+				_timestamp(logItem.GetTimestamp()),
+				_mark(false)
+				{}
 	
+		bool IsMarked(){ return _mark;}
+		void SetMark(bool mark){ _mark = mark;}
 		wxDateTime GetTimestamp() const { return _timestamp; }
 		
 		void SetTimestamp(wxDateTime timestamp){ _timestamp = timestamp;}
 
 	private:
-		wxDateTime _timestamp;
+		wxDateTime 	_timestamp;
+		bool		_mark;
 };
 
 WX_DECLARE_OBJARRAY(StripChartLogItem, LogItemBuffer);
