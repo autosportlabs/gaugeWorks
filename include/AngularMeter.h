@@ -6,6 +6,11 @@
 // Copyright:   (C)2004-2006 Copyright by Koan s.a.s. - www.koansoftware.com
 // Licence:     KWIC License http://www.koansoftware.com/kwic/kwic-license.htm
 /////////////////////////////////////////////////////////////////////////////
+#ifndef __ANGULARMETER_H__
+#define __ANGULARMETER_H__
+
+
+#include "wx/wx.h"
 
 #define MAX_TICKS 100
 
@@ -120,3 +125,5 @@ private:
 	int			_currentHeight;
 
 };
+#endif // __ANGULARMETER_H__
+

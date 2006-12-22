@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        AngularMeter.cpp
-// Purpose:     wxIndustrialControls Library
-// Author:      Marco Cavallini <m.cavallini AT koansoftware.com>
-// Modified by: 
+// Purpose:     Analog meter
+// Portions of code adapted by:
 // Copyright:   (C)2004-2006 Copyright by Koan s.a.s. - www.koansoftware.com
 // Licence:     KWIC License http://www.koansoftware.com/kwic/kwic-license.htm
 /////////////////////////////////////////////////////////////////////////////
