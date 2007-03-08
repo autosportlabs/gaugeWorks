@@ -442,7 +442,7 @@ void AngularMeter::DrawValue(wxDC &dc){
 	wxString valuetext;
 	valuetext.Printf("%d",_realVal);
 	dc.GetTextExtent(valuetext, &vw, &vh);
-	dc.DrawText(valuetext, (w / 2) - 10, (h / 2) - (vh * 1.3f));	
+	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (vh * 1.3f));	
 }
 
 void AngularMeter::DrawLabel(wxDC &dc){
