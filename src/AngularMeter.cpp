@@ -383,7 +383,6 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		
 		int deltarange = _rangeEnd - _rangeStart;
 		int deltaangle = _angleEnd - _angleStart;
-		double coeff = (double)deltaangle / (double)deltarange;
 
 		wxString s;		
 		s.Printf("%d", _majorTickRealValues[i] / _majorTickDivisor);
@@ -391,26 +390,11 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		int tw,th;
 		dc.GetTextExtent(s, &tw, &th);
 
-		int textX = (int)(cos(val) * ((h / 2) - majorTickLineLength));	//punto testo
-		int textY = (int)(sin(val) * ((h / 2) - majorTickLineLength));
+		int textX = (int)(cos(val) * ((h / 2) - (majorTickLineLength * 2)));	//punto testo
+		int textY = (int)(sin(val) * ((h / 2) - (majorTickLineLength * 2)));
 		
-		//if the tick mark is nearly vertical center the text
-		//under the tick mark
-		if ( abs(tx - dx) < (w/30)){
-			textX += (tw / 2);
-		}
+		dc.DrawText(s, (w/2) - textX - (tw /2) + wOffset, (h/2) - textY - (th / 2) + hOffset);
 		
-		//if the tick mark is nearly horizontal and to the right 
-		//offset the text by the width of the text string
-		if ( (abs(ty - dy) < (w/30)) && (tx >= dx) ){
-			textX += tw;	
-		}
-		//if the label is above the tick mark make sure the label is positioned further above
-		if ( ty > dy ) {
-			textY += ( ((int)(ty - dy)) + (th / 2));
-		}
-		
-		dc.DrawText(s, (w / 2) - textX + wOffset , (h / 2) - textY + hOffset);
 	}
 	
 	dc.SetPen(*wxThePenList->FindOrCreatePen(_minorTickColor, 1, wxSOLID));
