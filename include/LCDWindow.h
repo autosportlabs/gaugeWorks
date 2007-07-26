@@ -1,21 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        LCDWindow.h
-// Purpose:     wxIndustrialControls Library
-// Author:      Marco Cavallini <m.cavallini AT koansoftware.com>
-// Modified by: 
-// Copyright:   (C)2004-2006 Copyright by Koan s.a.s. - www.koansoftware.com
-// Licence:     KWIC License http://www.koansoftware.com/kwic/kwic-license.htm
+// The GaugeWorks project is released under the GNU Lesser Public License
+// with modifications. See the License.txt file for the full text
+// Copyright (c) 2007 Brent Picasso http://picasso.org
+// Name:        LCDWindow.cpp
+// LCD Window is based in part on the work of
+// the KWIC project (http://www.koansoftware.com/kwic/index.htm).
 /////////////////////////////////////////////////////////////////////////////
-//
-// Portions are from Class to display numbers like a Liquid Crystal Display, 
-// by Tsolakos Stavros
-/////////////////////////////////////////////////////////////////////////////
-// Print a value on the display. The accepted characters are :
-//	- All the hexadecimal digits ( 0-F )
-//	- The characters :,.-roC and space
-//	- The character ^ is displayed as an o, but displayed at the top. 
-//	( The symbol of degrees )
-//////////////////////////////////////////////////////////////////////////////
 #ifndef __LCDWINDOW_H__
 #define __LCDWINDOW_H__
 

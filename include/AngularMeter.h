@@ -1,10 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        AngularMeter.h
-// Purpose:     wxIndustrialControls Library
-// Author:      Marco Cavallini <m.cavallini AT koansoftware.com>
-// Modified by: 
-// Copyright:   (C)2004-2006 Copyright by Koan s.a.s. - www.koansoftware.com
-// Licence:     KWIC License http://www.koansoftware.com/kwic/kwic-license.htm
+// The GaugeWorks project is released under the GNU Lesser Public License
+// with modifications. See the License.txt file for the full text
+// Copyright (c) 2007 Brent Picasso http://picasso.org
+// Name:        AngularMeter.cpp
+// Purpose:     Analog meter
+// Portions of code adapted by:
+// AngularMeter is based in part on the work of
+// the KWIC project (http://www.koansoftware.com/kwic/index.htm).
 /////////////////////////////////////////////////////////////////////////////
 #ifndef __ANGULARMETER_H__
 #define __ANGULARMETER_H__

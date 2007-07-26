@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////
+// The GaugeWorks project is released under the GNU Lesser Public License
+// with modifications. See the License.txt file for the full text
+// Copyright (c) 2007 Brent Picasso http://picasso.org
+// Name:        StripChart
+// Purpose:     wxLed implementation
+/////////////////////////////////////////////////////////////////////////////
 #ifndef STRIPCHART_H_
 #define STRIPCHART_H_
 

@@ -1,10 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
+// The GaugeWorks project is released under the GNU Lesser Public License
+// with modifications. See the License.txt file for the full text
+// Copyright (c) 2007 Brent Picasso http://picasso.org
 // Name:        led.cpp
 // Purpose:     wxLed implementation
-// Author:      Thomas Monjalon
-// Created:     09/06/2005
-// Revision:    09/06/2005
-// Licence:     wxWidgets
 /////////////////////////////////////////////////////////////////////////////
 
 #include "led.h"
