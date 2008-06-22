@@ -38,9 +38,9 @@ class ChartScale{
 		ChartScale(const ChartScale &rhs){
 			minValue = rhs.minValue;
 			maxValue = rhs.maxValue;
-			scaleLabel = rhs.scaleLabel;
 			stepInterval = rhs.stepInterval;
 			displayOrientation = rhs.displayOrientation;	
+			scaleLabel = rhs.scaleLabel;
 		}
 		ChartScale & operator=(const ChartScale &rhs){
 			minValue = rhs.minValue;
@@ -53,11 +53,10 @@ class ChartScale{
 		}
 		
 
-		
-		UNITS_DISPLAY_ORIENTATION displayOrientation;
-		double stepInterval;
 		double minValue;
 		double maxValue;
+		double stepInterval;
+		UNITS_DISPLAY_ORIENTATION displayOrientation;
 		wxString scaleLabel;
 };
 
@@ -105,6 +104,9 @@ WX_DECLARE_STRING_HASH_MAP(LogItemType*, LogItemTypes);
 class StripChartLogItem : public LogItem{
 	
 	public:
+		
+		StripChartLogItem::StripChartLogItem(wxDateTime timestamp,size_type size = 10) : LogItem(size),_timestamp(timestamp),_mark(false){}
+		
 		StripChartLogItem::StripChartLogItem(size_type size = 10) : 
 				LogItem(size),
 				_timestamp(wxDateTime::UNow()),
@@ -141,7 +143,10 @@ class StripChart : public wxWindow
 	
 		~StripChart();
 		
-		const static unsigned int DEFAULT_DATA_BUFFER_SIZE = 1000;
+		static const int TIMESPAN_FROM_NOW = 0;
+		static const int TIMESPAN_FROM_LAST_LOG_ENTRY = 1;
+		
+		const static unsigned int DEFAULT_DATA_BUFFER_SIZE = 1000000;
 		
 		void SetChartHistorySize(unsigned int chartHistorySize);
 		
@@ -157,11 +162,22 @@ class StripChart : public wxWindow
 		void LogData(StripChartLogItem *values);
 		void ClearLog();
 		
+		void SetLogBufferSize(int size);
+		int GetLogBufferSize();
+
 		void SetZoom(int zoomPercentage);
 		int GetZoom();
 		
+		void SetTimespanMode(int mode);
+		int GetTimespanMode();
+		
 		bool GetShowScale();
 		void ShowScale(bool showScale);
+		
+		int GetOffsetFromEndSeconds();
+		void SetOffsetFromEndSeconds(int seconds);
+		
+		
 		
 		DECLARE_EVENT_TABLE()
 	
@@ -177,6 +193,7 @@ class StripChart : public wxWindow
 		void DrawGrid(wxMemoryDC &dc);
 		void DrawScale(wxMemoryDC &dc);
 		void DrawCurrentValues(wxMemoryDC &dc);
+		void UpdateCurrentDataBufferUBound();
 		
 		ChartScales			_chartScales;
 		LogItemBuffer		_dataBuffer;
@@ -193,9 +210,9 @@ class StripChart : public wxWindow
 		bool				_showData;
 		int					_mouseX;
 		int					_mouseY;
-		
-	
-		
+		int					_timespanMode;
+		int					_offsetFromEndSeconds;
+		int					_currentDataBufferUBound;
 };
 
 #endif /*STRIPCHART_H_*/

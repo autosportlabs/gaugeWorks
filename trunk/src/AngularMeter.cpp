@@ -207,17 +207,21 @@ void AngularMeter::ClearTicks(){
 void AngularMeter::AddMajorTick(int value){
 
 	double scaledValue = GetScaledValue(value);
-	_majorTickScaledValues[_majorTicks] = scaledValue;
-	_majorTickRealValues[_majorTicks] = value;
-	_majorTicks++;
+	if (_majorTicks < MAX_TICKS - 1){
+		_majorTickScaledValues[_majorTicks] = scaledValue;
+		_majorTickRealValues[_majorTicks] = value;
+		_majorTicks++;
+	}
 }
 
 void AngularMeter::AddMinorTick(int value){
 	
 	double scaledValue = GetScaledValue(value);
-	_minorTickScaledValues[_minorTicks] = scaledValue;
-	_minorTickRealValues[_minorTicks] = value;
-	_minorTicks++;	
+	if (_minorTicks < MAX_TICKS -1){
+		_minorTickScaledValues[_minorTicks] = scaledValue;
+		_minorTickRealValues[_minorTicks] = value;
+		_minorTicks++;	
+	}
 }
 
 
@@ -245,20 +249,20 @@ void AngularMeter::DrawNeedle(wxDC &dc)
 	dyi = sin(val - 90) * 2; //coordinate base sinistra
 	dxi = cos(val - 90) * 2;
 
-	ppoint[0].x = (w / 2) - dxi;	//base sinistra
-	ppoint[0].y = (h / 2) - dyi;
+	ppoint[0].x = (int)((w / 2) - dxi);	//base sinistra
+	ppoint[0].y = (int)((h / 2) - dyi);
 
 	dxi = cos(val) * ((h / 2) - 4); //coordinate punta indicatore
 	dyi = sin(val) * ((h / 2) - 4);
 
-	ppoint[2].x = (w / 2) - dxi;	//punta
-	ppoint[2].y = (h / 2) - dyi;
+	ppoint[2].x = (int)((w / 2) - dxi);	//punta
+	ppoint[2].y = (int)((h / 2) - dyi);
 
 	dxi = cos(val + 90) * 2; //coordinate base destra
 	dyi = sin(val + 90) * 2;
 
-	ppoint[4].x = (w / 2) - dxi;	//base destra
-	ppoint[4].y = (h / 2) - dyi;
+	ppoint[4].x = (int)((w / 2) - dxi);	//base destra
+	ppoint[4].y = (int)((h / 2) - dyi);
 
 	ppoint[5].x = ppoint[0].x;	//ritorno base sinistra
 	ppoint[5].y = ppoint[0].y;
@@ -269,16 +273,16 @@ void AngularMeter::DrawNeedle(wxDC &dc)
 	dxi = cos(val) * ((h / 2) - 10); //coordinate medio destra
 	dyi = sin(val) * ((h / 2) - 10);
 
-	ppoint[3].x = (w / 2) - dxi;	//base media destra
-	ppoint[3].y = (h / 2) - dyi;
+	ppoint[3].x = (int)((w / 2) - dxi);	//base media destra
+	ppoint[3].y = (int)((h / 2) - dyi);
 
 	val = (_scaledValue + _angleStart - 1) * _PI / 180;
 
 	dxi = cos(val) * ((h / 2) - 10); //coordinate medio sinistra
 	dyi = sin(val) * ((h / 2) - 10);
 
-	ppoint[1].x = (w / 2) - dxi;	//base media sinistra
-	ppoint[1].y = (h / 2) - dyi;
+	ppoint[1].x = (int)((w / 2) - dxi);	//base media sinistra
+	ppoint[1].y = (int)((h / 2) - dyi);
 
 /////////////////////////
 
@@ -296,10 +300,8 @@ void AngularMeter::DrawNeedle(wxDC &dc)
 
 void AngularMeter::DrawSectors(wxDC &dc)
 {
-	int secount,dx,dy;
 	int w,h ;
 
-	double val;
 	
 	GetClientSize(&w,&h);
 
@@ -329,7 +331,7 @@ void AngularMeter::DrawSectors(wxDC &dc)
 	//Draw warning range
 	
 	if (_realWarningValue > 0){
-		dc.SetPen(*wxThePenList->FindOrCreatePen(_warningColor,1, wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(_warningColor,2, wxSOLID));
 		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(_warningColor, wxFDIAGONAL_HATCH));
 		double warningEnd = _angleEnd - _scaledWarningValue;
 		
@@ -338,7 +340,7 @@ void AngularMeter::DrawSectors(wxDC &dc)
 		dc.DrawEllipticArc(0 + wOffset + 1, 0 + hOffset + 1, w - 2, h - 2, warningStart, warningEnd);
 	}
 	if (_realAlertValue > 0){
-		dc.SetPen(*wxThePenList->FindOrCreatePen(_alertColor, 1, wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(_alertColor, 3, wxSOLID));
 		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(_alertColor, wxBDIAGONAL_HATCH));
 		dc.DrawEllipticArc(0 + wOffset + 1, 0 + hOffset + 1, w - 2, h - 2, _angleStart, _angleEnd - _scaledAlertValue);
 	}
@@ -377,11 +379,8 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		double tx = cos(val) * ((h / 2) - majorTickLineLength);	//punto nel cerchio
 		double ty = sin(val) * ((h / 2) - majorTickLineLength);
 
-		dc.DrawLine((w / 2) - tx + wOffset, (h / 2) - ty + hOffset, (w / 2) - dx + wOffset, (h / 2) - dy + hOffset);
+		dc.DrawLine((w / 2) - (int)tx + wOffset, (h / 2) - (int)ty + hOffset, (w / 2) - (int)dx + wOffset, (h / 2) - (int)dy + hOffset);
 		
-		int deltarange = _rangeEnd - _rangeStart;
-		int deltaangle = _angleEnd - _angleStart;
-
 		wxString s;		
 		s.Printf("%d", _majorTickRealValues[i] / _majorTickDivisor);
 
@@ -406,7 +405,7 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		double tx = cos(val) * ((h / 2) - minorTickLineLength);	//punto nel cerchio
 		double ty = sin(val) * ((h / 2) - minorTickLineLength);
 
-		dc.DrawLine((w / 2) - tx + wOffset, (h / 2) - ty + hOffset, (w / 2) - dx + wOffset, (h / 2) - dy + hOffset);
+		dc.DrawLine((w / 2) - (int)tx + wOffset, (h / 2) - (int)ty + hOffset, (w / 2) - (int)dx + wOffset, (h / 2) - (int)dy + hOffset);
 	}
 	
 }
@@ -424,7 +423,7 @@ void AngularMeter::DrawValue(wxDC &dc){
 	wxString valuetext;
 	valuetext.Printf("%d",_realVal);
 	dc.GetTextExtent(valuetext, &vw, &vh);
-	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (vh * 1.3f));	
+	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (int)(((float)vh * 1.3f)));	
 }
 
 void AngularMeter::DrawLabel(wxDC &dc){
@@ -438,5 +437,5 @@ void AngularMeter::DrawLabel(wxDC &dc){
 	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);
-	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (lh * 0.7f));
+	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (int)(((float)lh * 0.7f)));
 }

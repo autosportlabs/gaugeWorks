@@ -14,7 +14,7 @@
 
 #include "wx/wx.h"
 
-#define MAX_TICKS 100
+#define MAX_TICKS 1000
 
 class AngularMeter : public wxWindow
 {

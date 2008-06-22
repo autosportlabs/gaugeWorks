@@ -15,7 +15,7 @@
 #define GRID_SIZE 				20
 #define DEFAULT_ZOOM 			100
 #define MIN_ZOOM				25
-
+#define DEFAULT_OFFSET_SECONDS	0
 
 //the data buffer
 WX_DEFINE_OBJARRAY(ChartScales);
@@ -36,7 +36,9 @@ END_EVENT_TABLE()
 
 StripChart::StripChart(): wxWindow(), 
 	_zoomPercentage(DEFAULT_ZOOM),
-	_showScale(true)
+	_showScale(true),
+	_timespanMode(TIMESPAN_FROM_NOW),
+	_offsetFromEndSeconds(DEFAULT_OFFSET_SECONDS)
 {}
 
 StripChart::StripChart(		wxWindow *parent,
@@ -45,7 +47,10 @@ StripChart::StripChart(		wxWindow *parent,
 							const wxSize &size)
 							: wxWindow(parent, id, pos, size),
 								_zoomPercentage(DEFAULT_ZOOM),
-								_showScale(true)
+								_showScale(true),
+								_timespanMode(TIMESPAN_FROM_NOW),
+								_offsetFromEndSeconds(DEFAULT_OFFSET_SECONDS),
+								_currentDataBufferUBound(-1)
 							
 {
 	if (parent){
@@ -100,6 +105,33 @@ void StripChart::SetZoom(int zoomPercentage){
 	Refresh();
 }
 	
+void StripChart::SetTimespanMode(int mode){
+	_timespanMode = mode;
+}
+
+int StripChart::GetTimespanMode(){
+	return _timespanMode;
+}
+
+int StripChart::GetOffsetFromEndSeconds(){
+	return _offsetFromEndSeconds;
+}
+void StripChart::SetOffsetFromEndSeconds(int offsetSeconds){
+	_offsetFromEndSeconds = offsetSeconds;
+	UpdateCurrentDataBufferUBound();
+	Refresh();
+}
+
+void StripChart::SetLogBufferSize(int size){
+	_dataBufferSize = size;
+}
+
+int StripChart::GetLogBufferSize(){
+	return _dataBufferSize;
+}
+
+int GetLogBufferSize();
+
 
 void StripChart::ClearScales(){
 	_chartScales.Clear();
@@ -161,11 +193,33 @@ void StripChart::LogData(StripChartLogItem *values){
 	if (_dataBuffer.size() > _dataBufferSize){
 		_dataBuffer.RemoveAt(0);
 	}
+	UpdateCurrentDataBufferUBound();
 	Refresh();
+}
+
+void StripChart::UpdateCurrentDataBufferUBound(){
+	
+	int dataBufferSize = _dataBuffer.size();
+	if (dataBufferSize > 0){
+		wxDateTime lastTimestamp = _dataBuffer[dataBufferSize - 1].GetTimestamp();
+		for (int i = dataBufferSize - 1; i >=0;i--){
+			wxDateTime timestamp = _dataBuffer[i].GetTimestamp();
+			wxTimeSpan span = (lastTimestamp - timestamp);
+			if (span.GetSeconds().ToLong() >= _offsetFromEndSeconds){
+				_currentDataBufferUBound = i;
+				return;
+			}
+		}
+		_currentDataBufferUBound = 0;
+	}
+	else{
+		_currentDataBufferUBound = -1;
+	}
 }
 
 void StripChart::ClearLog(){
 	_dataBuffer.Clear();
+	UpdateCurrentDataBufferUBound();
 	Refresh();	
 }
 
@@ -215,8 +269,10 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	
 	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxLIGHT_GREY, 1, wxSHORT_DASH));
 	
+	int dataBufferUBound = _currentDataBufferUBound;
+	
 	float currentX = (float)w;
-	for (int i = dataBufferSize - 1; i >= 0; i--){		
+	for (int i = dataBufferUBound; i >= 0; i--){		
 		if (_dataBuffer[i].IsMarked()){
 			dc.DrawLine((int)currentX,0,(int)currentX,h);					
 		}	
@@ -240,13 +296,15 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		
 		int lastX = (int)currentX;
 		int lastY;
+		
 		if (dataBufferSize > 0){
-			StripChartLogItem logItem = _dataBuffer[dataBufferSize - 1];
+			
+			StripChartLogItem logItem = _dataBuffer[dataBufferUBound];
 			double loggedValue = logItem[key];
 			double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
 			lastY = h - (int)(((double)h) * percentageOfMax);
 			
-			for (int i = dataBufferSize - 1; i >= 0; i--){
+			for (int i = dataBufferUBound; i >= 0; i--){
 				StripChartLogItem logItem = _dataBuffer[i];
 				double loggedValue = logItem[key];
 				
@@ -274,6 +332,8 @@ void StripChart::DrawCurrentValues(wxMemoryDC &dc){
 	int dataBufferSize = _dataBuffer.size();
 	float zoomFactor = (float)_zoomPercentage / 100.0;
 	int dataBufferIndex = dataBufferSize - (int)(((float)(_currentWidth - _mouseX)) / zoomFactor) - 1;
+	//adjust for uboundoffset
+	dataBufferIndex-=((dataBufferSize - 1) -_currentDataBufferUBound);
 	if (dataBufferIndex < 0 || dataBufferIndex >= dataBufferSize) return;
 	
 	
@@ -284,8 +344,21 @@ void StripChart::DrawCurrentValues(wxMemoryDC &dc){
 	StripChartLogItem logItem = _dataBuffer[dataBufferIndex];
 	
 	wxDateTime timestamp = logItem.GetTimestamp();
-	wxTimeSpan span =  (wxDateTime::UNow() - timestamp);
-	wxString timeString = wxString::Format("%d seconds back",span.GetSeconds().ToLong());
+	
+	wxDateTime fromTime;
+	switch(_timespanMode){
+		case TIMESPAN_FROM_LAST_LOG_ENTRY:
+		{
+			StripChartLogItem lastLogItem = _dataBuffer[dataBufferSize - 1];
+			fromTime = lastLogItem.GetTimestamp();
+			break;
+		}
+		case TIMESPAN_FROM_NOW:
+			fromTime = wxDateTime::UNow();
+			break;
+	}
+	wxTimeSpan span =  (fromTime - timestamp);
+	wxString timeString = wxString::Format("%d seconds back",(int)span.GetSeconds().ToLong());
 	
 	
 	wxFont labelFont = GetFont();
@@ -294,7 +367,7 @@ void StripChart::DrawCurrentValues(wxMemoryDC &dc){
 	dc.SetTextForeground(*wxWHITE);
 	
 	dc.DrawRotatedText(timeString, _mouseX - labelWidth, _mouseY,90);
-	 
+	
 	for (LogItemTypes::iterator it = _logItemTypes.begin(); it != _logItemTypes.end(); ++it){
 
 		wxString key = it->first;		
@@ -307,15 +380,14 @@ void StripChart::DrawCurrentValues(wxMemoryDC &dc){
 		wxString valueString = logItemType->typeLabel + ": " + wxString::Format("%d",value) + " " +scale->scaleLabel;
 
 		dc.GetTextExtent(valueString, &labelHeight, &labelWidth, &descent, &externalLeading, &labelFont);
+		
 		currentOffset += labelWidth;
-		dc.DrawRotatedText(valueString,_mouseX + 10, _mouseY - currentOffset,0);
+		dc.DrawRotatedText(valueString,_mouseX - labelHeight - 15, _mouseY - currentOffset,0);
 	}
 }
 
 void StripChart::DrawScale(wxMemoryDC &dc){
-	
-	unsigned int logItemTypes = _logItemTypes.size();
-	
+		
 	int leftOrientationEdge = 0;
 	int rightOrientationEdge = _currentWidth - 1;
 	
@@ -428,7 +500,7 @@ void StripChart::DrawGrid(wxMemoryDC &dc){
 	
 	float zoomFactor = (float)_zoomPercentage / 100;
 	
-	int gridIncrement = GRID_SIZE * zoomFactor;
+	int gridIncrement = (int)(GRID_SIZE * zoomFactor);
 	
 	for (int x = width; x >=0 ; x -= gridIncrement){
 		dc.DrawLine(x, 0, x, height);
