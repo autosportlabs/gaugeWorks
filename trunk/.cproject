@@ -24,16 +24,16 @@
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180.308572587" name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.mingw.base.1524297282" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.PE" id="cdt.managedbuild.target.gnu.platform.mingw.base.851518828" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.mingw.base"/>
-<builder autoBuildTarget="" buildPath="${workspace_loc:/gaugeWorks/Debug}" cleanBuildTarget="" enabledIncrementalBuild="false" id="cdt.managedbuild.tool.gnu.builder.mingw.base.982005849" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="CDT Internal Builder" parallelBuildOn="false" parallelizationNumber="3" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+<builder autoBuildTarget="" buildPath="${workspace_loc:/gaugeWorks/Debug}" cleanBuildTarget="" enabledIncrementalBuild="true" id="cdt.managedbuild.tool.gnu.builder.mingw.base.982005849" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="CDT Internal Builder" parallelBuildOn="true" parallelizationNumber="2" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.mingw.base.2141078355" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.base">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.64020907" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.250794060" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.24545604" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base">
 <option id="gnu.cpp.compiler.option.include.paths.1453622627" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/msw-debug/lib/wx/include/msw-ansi-debug-static-2.6"/>
+<listOptionValue builtIn="false" value="C:/wxWidgets-2.8.10/msw-debug/lib/wx/include/msw-ansi-debug-static-2.8"/>
 <listOptionValue builtIn="false" value="../include"/>
-<listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/include"/>
+<listOptionValue builtIn="false" value="C:/wxWidgets-2.8.10/include"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.59546731" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="WX_PRECOMP"/>
@@ -43,6 +43,7 @@
 </option>
 <option id="gnu.cpp.compiler.option.other.other.160997287" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -mthreads" valueType="string"/>
 <option id="gnu.cpp.compiler.option.optimization.level.791937343" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.debugging.level.1194021220" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1490512828" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.base.2119386000" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.base">
@@ -664,16 +665,16 @@
 <folderInfo id="cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371.2084129166" name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.mingw.base.252533373" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.PE" id="cdt.managedbuild.target.gnu.platform.mingw.base.1682338207" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.mingw.base"/>
-<builder autoBuildTarget="" buildPath="${workspace_loc:/gaugeWorks/Release}" cleanBuildTarget="" enableAutoBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.tool.gnu.builder.mingw.base.2072810793" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="CDT Internal Builder" parallelBuildOn="false" parallelizationNumber="3" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+<builder autoBuildTarget="" buildPath="${workspace_loc:/gaugeWorks/Release}" cleanBuildTarget="" enableAutoBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.tool.gnu.builder.mingw.base.2072810793" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="CDT Internal Builder" parallelBuildOn="true" parallelizationNumber="2" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.mingw.base.445912103" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.base">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.2129376754" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.1881941949" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base.685249119" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.base">
 <option id="gnu.cpp.compiler.option.include.paths.1806923141" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/msw-release/lib/wx/include/msw-ansi-release-static-2.6"/>
+<listOptionValue builtIn="false" value="C:/wxWidgets-2.8.10/msw-release/lib/wx/include/msw-ansi-release-static-2.8"/>
 <listOptionValue builtIn="false" value="../include"/>
-<listOptionValue builtIn="false" value="C:/wxWidgets-2.6.2/include"/>
+<listOptionValue builtIn="false" value="C:/wxWidgets-2.8.10/include"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.2110905631" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="WX_PRECOMP"/>
