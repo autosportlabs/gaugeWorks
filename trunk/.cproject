@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?>
 
 <cproject>
@@ -3428,6 +3428,9 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
+<project-mappings/>
+</storageModule>
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.gnu.cygwin.lib.release.981692978">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cygwin.lib.release.981692978" moduleId="org.eclipse.cdt.core.settings" name="Linux-Release">
@@ -4550,6 +4553,9 @@
 </scannerInfoProvider>
 </profile>
 </scannerConfigBuildInfo>
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
+<project-mappings/>
 </storageModule>
 </cconfiguration>
 </storageModule>
