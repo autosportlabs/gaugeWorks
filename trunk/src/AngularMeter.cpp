@@ -9,7 +9,14 @@
 // the KWIC project (http://www.koansoftware.com/kwic/index.htm).
 /////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wx.h>
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+// for all others, include the necessary headers (this file is usually all you
+// need because it includes almost all "standard" wxWidgets headers)
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
 #include <wx/image.h>
 #include <math.h>
 #include <wx/log.h>
@@ -23,7 +30,7 @@
 BEGIN_EVENT_TABLE(AngularMeter,wxWindow)
 	EVT_PAINT(AngularMeter::OnPaint)
 	EVT_SIZE(AngularMeter::OnSize)
-	
+
 	EVT_ERASE_BACKGROUND(AngularMeter::OnEraseBackGround)
 END_EVENT_TABLE()
 
@@ -39,7 +46,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
   if (parent)
     SetBackgroundColour(parent->GetBackgroundColour());
   else
-    SetBackgroundColour(*wxBLACK);      
+    SetBackgroundColour(*wxBLACK);
 
     //SetSize(size);
     SetAutoLayout(TRUE);
@@ -66,7 +73,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
 	_needleColor = *wxRED;	//indicatore
 	_alertColor = wxColor(225, 0, 0);
 	_warningColor = wxColor(254, 216, 1);
-	
+
 	_labelTextColor = *wxWHITE;
 	_valueTextColor = *wxWHITE;
 	_majorTickColor = *wxWHITE;
@@ -77,7 +84,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
 	_majorTickFont = *wxSWISS_FONT;	//font
 	_labelFont = *wxSWISS_FONT;
 	_valueFont = *wxSWISS_FONT;
-	
+
 	_shouldDrawCurrent = true ;
 
 	_currentWidth = size.GetWidth();
@@ -117,12 +124,12 @@ double AngularMeter::GetScaledValue( int value ){
 	int deltaangle = _angleEnd - _angleStart;
 	double coeff = (double)deltaangle / (double)deltarange;
 
-	double scaledValue = (int)((double)(value - _rangeStart) * coeff); 
+	double scaledValue = (int)((double)(value - _rangeStart) * coeff);
 	return scaledValue;
 }
 
-void AngularMeter::SetValue(int val) 
-{ 
+void AngularMeter::SetValue(int val)
+{
 	_scaledValue = GetScaledValue( val );
 	_realVal = val;
 	Refresh();
@@ -137,7 +144,7 @@ void AngularMeter::SetWarningThreshold(int val){
 
 void AngularMeter::SetAlertThreshold(int val){
 	_scaledAlertValue = GetScaledValue( val );
-	_realAlertValue = val;	
+	_realAlertValue = val;
 	Refresh();
 }
 
@@ -150,14 +157,14 @@ void AngularMeter::OnSize(wxSizeEvent &event){
 
 void AngularMeter::OnPaint(wxPaintEvent &event)
 {
-	
+
 	wxPaintDC old_dc(this);
-	
+
 //	wxPaintDC dc((wxWindow *) this);
-	
+
 	int w,h ;
 	GetClientSize(&w,&h);
-	
+
 	if (w != _currentWidth || h != _currentHeight){
 		delete (_memBitmap);
 		_currentWidth = w;
@@ -178,7 +185,7 @@ void AngularMeter::OnPaint(wxPaintEvent &event)
 
 	dc.SetPen(*wxThePenList->FindOrCreatePen(_borderColor, 1, wxSOLID));
 	dc.DrawRectangle(0,0,w,h);
-	
+
 	//settori
 	DrawSectors(dc) ;
 
@@ -193,15 +200,15 @@ void AngularMeter::OnPaint(wxPaintEvent &event)
 
 	//testo valore
 	if (_shouldDrawCurrent) DrawValue(dc);
-	
+
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
 }
 
 void AngularMeter::ClearTicks(){
-	
+
 	_majorTicks = 0;
-	_minorTicks = 0;	
+	_minorTicks = 0;
 }
 
 void AngularMeter::AddMajorTick(int value){
@@ -215,17 +222,17 @@ void AngularMeter::AddMajorTick(int value){
 }
 
 void AngularMeter::AddMinorTick(int value){
-	
+
 	double scaledValue = GetScaledValue(value);
 	if (_minorTicks < MAX_TICKS -1){
 		_minorTickScaledValues[_minorTicks] = scaledValue;
 		_minorTickRealValues[_minorTicks] = value;
-		_minorTicks++;	
+		_minorTicks++;
 	}
 }
 
 
-void AngularMeter::DrawNeedle(wxDC &dc) 
+void AngularMeter::DrawNeedle(wxDC &dc)
 {
 	//indicatore triangolare
 	double dxi,dyi, val;
@@ -233,8 +240,8 @@ void AngularMeter::DrawNeedle(wxDC &dc)
 	int w, h ;
 
 	GetClientSize(&w,&h);
-	
-	int hOffset = 0; 
+
+	int hOffset = 0;
 	int wOffset = 0;
 	if (w > h) wOffset = (w - h) / 2;
 	if (h > w) hOffset = (h - w) / 2;
@@ -302,10 +309,10 @@ void AngularMeter::DrawSectors(wxDC &dc)
 {
 	int w,h ;
 
-	
+
 	GetClientSize(&w,&h);
 
-	int hOffset = 0; 
+	int hOffset = 0;
 	int wOffset = 0;
 	if (w > h) wOffset = (w - h) / 2;
 	if (h > w) hOffset = (h - w) / 2;
@@ -316,7 +323,7 @@ void AngularMeter::DrawSectors(wxDC &dc)
 
 	//Draw the dial
 	dc.SetPen(*wxThePenList->FindOrCreatePen(_dialColor,1 , wxSOLID));
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(_dialColor,wxSOLID));		
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(_dialColor,wxSOLID));
 	dc.DrawEllipticArc(0 + wOffset, 0 + hOffset, w, h, 0,  360);
 
 	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxBLACK, wxTRANSPARENT));
@@ -325,18 +332,18 @@ void AngularMeter::DrawSectors(wxDC &dc)
 	dc.DrawEllipticArc(0 + wOffset, 0 + hOffset, w, h, 45, -135);
 
 	dc.SetPen(*wxThePenList->FindOrCreatePen(wxColor(0x55,0x55,0x55), 2, wxSOLID));
-	dc.DrawEllipticArc(0 + wOffset, 0 + hOffset, w, h, -135, 45); 
+	dc.DrawEllipticArc(0 + wOffset, 0 + hOffset, w, h, -135, 45);
 	//Done drawing dial
-	
+
 	//Draw warning range
-	
+
 	if (_realWarningValue > 0){
 		dc.SetPen(*wxThePenList->FindOrCreatePen(_warningColor,2, wxSOLID));
 		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(_warningColor, wxFDIAGONAL_HATCH));
 		double warningEnd = _angleEnd - _scaledWarningValue;
-		
-		double warningStart = (_realAlertValue > 0 ? _angleEnd - _scaledAlertValue : _angleStart); 
-		
+
+		double warningStart = (_realAlertValue > 0 ? _angleEnd - _scaledAlertValue : _angleStart);
+
 		dc.DrawEllipticArc(0 + wOffset + 1, 0 + hOffset + 1, w - 2, h - 2, warningStart, warningEnd);
 	}
 	if (_realAlertValue > 0){
@@ -348,11 +355,11 @@ void AngularMeter::DrawSectors(wxDC &dc)
 
 void AngularMeter::DrawTicks(wxDC &dc)
 {
-	
+
 	int w,h;
 	GetClientSize(&w, &h);
 
-	int hOffset = 0; 
+	int hOffset = 0;
 	int wOffset = 0;
 	if (w > h) wOffset = (w - h) / 2;
 	if (h > w) hOffset = (h - w) / 2;
@@ -361,18 +368,18 @@ void AngularMeter::DrawTicks(wxDC &dc)
 	if (w > h) w=h;
 	if (h > w) h=w;
 
-	wxPen *pen = wxThePenList->FindOrCreatePen(_majorTickColor, 4, wxSOLID); 
+	wxPen *pen = wxThePenList->FindOrCreatePen(_majorTickColor, 4, wxSOLID);
 	pen->SetCap(wxCAP_BUTT);
 	dc.SetPen(*pen);
-	
+
 	int majorTickLineLength = w / 20;
 	dc.SetFont(_majorTickFont);
 	dc.SetTextForeground(_majorTickTextColor);
-	
+
 	for (int i = 0; i < _majorTicks; i++){
-	
+
 		double val = ( (_majorTickScaledValues[i] + _angleStart) * _PI) / 180;
-		
+
 		double dx = cos(val) * ((h/2) - 1 );	//punto sul cerchio
 		double dy = sin(val) * ((h/2) - 1 );
 
@@ -380,8 +387,8 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		double ty = sin(val) * ((h / 2) - majorTickLineLength);
 
 		dc.DrawLine((w / 2) - (int)tx + wOffset, (h / 2) - (int)ty + hOffset, (w / 2) - (int)dx + wOffset, (h / 2) - (int)dy + hOffset);
-		
-		wxString s;		
+
+		wxString s;
 		s.Printf("%d", _majorTickRealValues[i] / _majorTickDivisor);
 
 		int tw,th;
@@ -389,16 +396,16 @@ void AngularMeter::DrawTicks(wxDC &dc)
 
 		int textX = (int)(cos(val) * ((h / 2) - (majorTickLineLength * 2)));	//punto testo
 		int textY = (int)(sin(val) * ((h / 2) - (majorTickLineLength * 2)));
-		
+
 		dc.DrawText(s, (w/2) - textX - (tw /2) + wOffset, (h/2) - textY - (th / 2) + hOffset);
-		
+
 	}
-	
+
 	dc.SetPen(*wxThePenList->FindOrCreatePen(_minorTickColor, 1, wxSOLID));
 	int minorTickLineLength = w / 25;
 	for (int i = 0; i < _minorTicks; i++){
 		double val = ( (_minorTickScaledValues[i] + _angleStart) * _PI) / 180;
-		
+
 		double dx = cos(val) * ((h/2) - 1);	//punto sul cerchio
 		double dy = sin(val) * ((h/2) - 1);
 
@@ -407,14 +414,14 @@ void AngularMeter::DrawTicks(wxDC &dc)
 
 		dc.DrawLine((w / 2) - (int)tx + wOffset, (h / 2) - (int)ty + hOffset, (w / 2) - (int)dx + wOffset, (h / 2) - (int)dy + hOffset);
 	}
-	
+
 }
 
 void AngularMeter::DrawValue(wxDC &dc){
-	
+
 	dc.SetTextForeground(_valueTextColor);
 	dc.SetFont(_valueFont);
-	
+
 	int w,h;
 	GetClientSize(&w, &h);
 
@@ -423,17 +430,17 @@ void AngularMeter::DrawValue(wxDC &dc){
 	wxString valuetext;
 	valuetext.Printf("%d",_realVal);
 	dc.GetTextExtent(valuetext, &vw, &vh);
-	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (int)(((float)vh * 1.3f)));	
+	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (int)(((float)vh * 1.3f)));
 }
 
 void AngularMeter::DrawLabel(wxDC &dc){
-	
+
 	dc.SetTextForeground(_labelTextColor);
 	dc.SetFont(_labelFont);
-	
+
 	int w,h;
 	GetClientSize(&w, &h);
-	
+
 	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);

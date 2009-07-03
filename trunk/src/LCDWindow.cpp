@@ -24,9 +24,9 @@ BEGIN_EVENT_TABLE( LCDDisplay, wxWindow )
 END_EVENT_TABLE()
 
 
-LCDDisplay::LCDDisplay( wxWindow *parent, 
-						const wxPoint& pos, 
-						const wxSize& size ) 
+LCDDisplay::LCDDisplay( wxWindow *parent,
+						const wxPoint& pos,
+						const wxSize& size )
 : wxWindow( parent, -1, pos, size )
 {
 	mSegmentLen = 40;
@@ -39,7 +39,7 @@ LCDDisplay::LCDDisplay( wxWindow *parent,
 	mGrayColour = wxColour( 0, 40, 0 );
 	_labelTextColor = *wxWHITE;
 	_labelFont = *wxSWISS_FONT;
-	
+
 	SetBackgroundColour( wxColour( 0, 0, 0 ) );
 
 }
@@ -68,10 +68,10 @@ void LCDDisplay::OnPaint( wxPaintEvent &event )
 	double as = xs > ys? ys : xs;
 
 	dc.SetUserScale( as, as );
-	dc.SetDeviceOrigin( ( ( dw - bw * as ) / 2 ), ( ( dh - bh * as ) / 2 ) );
+	dc.SetDeviceOrigin( (wxCoord)( ( dw - bw * as ) / 2 ), (wxCoord)( ( dh - bh * as ) / 2 ) );
 
 	DoDrawing( &dc );
-	dc.EndDrawing();
+	//dc.EndDrawing();
 }
 
 
@@ -81,18 +81,18 @@ void LCDDisplay::OnSize( wxSizeEvent &event )
 }
 
 void LCDDisplay::DrawLabel(wxDC &dc){
-	
+
 	dc.SetTextForeground(_labelTextColor);
 	dc.SetFont(_labelFont);
-	
+
 	int w,h;
 	GetClientSize(&w, &h);
-	
-	
+
+
 	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);
-	
+
 	dc.DrawText(_label, (w / 2) - (lw / 2), h - lh);
 }
 
@@ -371,7 +371,7 @@ void LCDDisplay::SetNumberDigits( int ndigits )	//numero cifre
 void LCDDisplay::SetValue( wxString value )
 {
 	if (value == mValue) return;
-	
+
 	mValue = value;
 	Refresh( false );
 }
@@ -431,7 +431,7 @@ int LCDDisplay::GetDigitsNeeded( wxString value )
 //     1       2
 //     *       *
 //      ***6***
-//     *       *  
+//     *       *
 //     3       4
 //     *       *
 //      ***5***
@@ -460,7 +460,7 @@ int LCDDisplay::GetDigitsNeeded( wxString value )
 // - : 0100.0000 = 0x40
 
 // r : 0100.1000 = 0x48
-// o : 0111.1000 = 0x78 
+// o : 0111.1000 = 0x78
 // ^ : 0100.0111 = 0x47 //simbolo gradi
 
 // A : 0101.1111 = 0x2F
@@ -479,16 +479,16 @@ int LCDDisplay::GetDigitsNeeded( wxString value )
 unsigned char LCDDisplay::Decode( char c )
 {
 	unsigned char ret = 0;
-	
+
 	struct DecodedDisplay
 	{
 		char ch;
 		unsigned char value;
 	};
 
-	DecodedDisplay dec[] = 
+	DecodedDisplay dec[] =
 	{
-		{ '0', 0x3F }, 
+		{ '0', 0x3F },
 		{ '1', 0x14 },
 		{ '2', 0x6D },
 		{ '3', 0x75 },

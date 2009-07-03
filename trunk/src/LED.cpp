@@ -6,7 +6,7 @@
 // Purpose:     wxLed implementation
 /////////////////////////////////////////////////////////////////////////////
 
-#include "led.h"
+#include "LED.h"
 
 #include <string.h>
 
@@ -77,7 +77,7 @@ void wxLed::SetBitmap (const char * color)
 		for (int i = 0 ; i < WX_LED_XPM_LINES ; i ++)
 			xpm [i] = xpmData + i * WX_LED_XPM_COLS ;
 		// width height num_colors chars_per_pixel
-		sprintf (xpm [0], "%d %d %d 1", WX_LED_WIDTH, WX_LED_HEIGHT, WX_LED_COLORS, WX_LED_XPM_COLS) ;
+		sprintf (xpm [0], "%d %d %d 1", WX_LED_WIDTH, WX_LED_HEIGHT, WX_LED_COLORS); //, WX_LED_XPM_COLS) ;
 		// colors
 		strncpy (xpm [1], "  c None", WX_LED_XPM_COLS) ;
 		strncpy (xpm [2], "- c #C0C0C0", WX_LED_XPM_COLS) ;
