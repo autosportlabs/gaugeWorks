@@ -1,4 +1,4 @@
-#Tue Jan 01 23:13:04 PST 2008
+#Sun Jul 19 18:34:39 PDT 2009
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
@@ -8,4 +8,3 @@ indexer/indexerId=org.eclipse.cdt.core.fastIndexer
 indexer/skipReferences=false
 indexer/skipTypeReferences=false
 indexerId=org.eclipse.cdt.core.domsourceindexer
-instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
