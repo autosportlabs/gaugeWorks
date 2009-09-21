@@ -27,20 +27,20 @@ public:
 				const long int   style      = 0);
 
 	virtual ~AngularMeter();
-	void SetValue(int val);
+	void SetValue(double val);
 	
-	void SetWarningThreshold(int value);
-	void SetAlertThreshold(int value);
+	void SetWarningThreshold(double value);
+	void SetAlertThreshold(double value);
 
-	void AddMajorTick(int value);
-	void AddMinorTick(int value);
+	void AddMajorTick(double value);
+	void AddMinorTick(double value);
 	void ClearTicks();
-	
+	void AddTicks(double majorTickIncrement, double minorTickIncrement);
 	
 	void SetMajorTickDisplayDivisor(int divisor) { _majorTickDivisor = divisor; };
 	
-	void SetRange(int min, int max) { _rangeStart = min ; _rangeEnd = max ; } ;
-	void SetAngle(int min, int max) { _angleStart = min ; _angleEnd = max ; } ;
+	void SetRange(double min, double max) { _rangeStart = min ; _rangeEnd = max ; } ;
+	void SetAngle(double min, double max) { _angleStart = min ; _angleEnd = max ; } ;
 	
 	void SetLabel(wxString label){ _label = label; };
 	void SetMajorTickColor(wxColour color){ _majorTickColor = color; };
@@ -50,6 +50,7 @@ public:
 	void SetLabelFont(wxFont &font) { _labelFont = font; };
 	void SetValueFont(wxFont &font) { _valueFont = font; };
 	void SetMajorTickTextColor(wxColour color){ _majorTickTextColor = color; };
+	void SetValuePrecision(unsigned int precision);
 	
 	void SetDialColor(wxColour colour) { _dialColor = colour; };
 	void SetAlertColor(wxColour colour) { _alertColor = colour; };
@@ -61,11 +62,10 @@ public:
 	void DrawCurrent(bool state) { _shouldDrawCurrent = state; };
 
 
+
 private:
-    // any class wishing to process wxWindows events must use this macro
-    DECLARE_EVENT_TABLE()
     
-    double	GetScaledValue( int value );
+    double	GetScaledValue( double value );
 
 	void    OnPaint(wxPaintEvent& event);
 	void	OnSize(wxSizeEvent& event);
@@ -82,16 +82,16 @@ private:
 private:
 	wxString	_label;
 	wxWindowID 	_windowId;
-	int			_rangeStart ;
-	int			_rangeEnd ;
+	double		_rangeStart ;
+	double		_rangeEnd ;
 	int			_angleStart ;
 	int			_angleEnd ;
 	double		_scaledValue ;
-	int			_realVal ;
+	double		_realVal ;
 	double		_scaledWarningValue;
-	int			_realWarningValue;
+	double		_realWarningValue;
 	double		_scaledAlertValue;
-	int			_realAlertValue;
+	double		_realAlertValue;
 	
 	double		_PI ;
 	bool		_shouldDrawCurrent ;
@@ -113,11 +113,11 @@ private:
 	wxColour	_dialColor;
 
 	int			_majorTickDivisor;
-	int			_majorTickRealValues[MAX_TICKS];
+	double		_majorTickRealValues[MAX_TICKS];
 	double		_majorTickScaledValues[MAX_TICKS];
 	int			_majorTicks;
 	
-	int			_minorTickRealValues[MAX_TICKS];
+	double		_minorTickRealValues[MAX_TICKS];
 	double		_minorTickScaledValues[MAX_TICKS];
 	int			_minorTicks;
 
@@ -125,6 +125,10 @@ private:
 
 	int			_currentWidth;
 	int			_currentHeight;
+	unsigned int m_valuePrecision;
+
+    // any class wishing to process wxWindows events must use this macro
+    DECLARE_EVENT_TABLE()
 
 };
 #endif // __ANGULARMETER_H__

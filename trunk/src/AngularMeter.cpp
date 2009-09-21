@@ -24,15 +24,12 @@
 #include "AngularMeter.h"
 #include <wx/event.h>
 
+#define	DEFAULT_VALUE_PRECISION 0
+#define MAX_VALUE_PRECISION 4
+static const char * VALUE_FORMAT[MAX_VALUE_PRECISION + 1] = {"%4.0f","%4.1f","%4.2f","%4.3f","%4.4f"};
 
 //IMPLEMENT_DYNAMIC_CLASS(kwxAngularMeter, wxWindow)
 
-BEGIN_EVENT_TABLE(AngularMeter,wxWindow)
-	EVT_PAINT(AngularMeter::OnPaint)
-	EVT_SIZE(AngularMeter::OnSize)
-
-	EVT_ERASE_BACKGROUND(AngularMeter::OnEraseBackGround)
-END_EVENT_TABLE()
 
 AngularMeter::AngularMeter(wxWindow* parent,
 		                   const wxWindowID id,
@@ -92,6 +89,7 @@ AngularMeter::AngularMeter(wxWindow* parent,
 	_memBitmap = new wxBitmap(_currentWidth, _currentHeight);
 	m_pPreviewBmp = NULL;
 	_label = "";
+	m_valuePrecision = DEFAULT_VALUE_PRECISION;
 
 
 	/////////////// TODO : Test for BMP image loading /////////////////
@@ -117,32 +115,32 @@ AngularMeter::~AngularMeter()
 	delete _memBitmap;
 }
 
-double AngularMeter::GetScaledValue( int value ){
+double AngularMeter::GetScaledValue( double value ){
 
-	int deltarange = _rangeEnd - _rangeStart;
+	double deltarange = _rangeEnd - _rangeStart;
 //	int rangezero = deltarange - m_nRangeStart;
-	int deltaangle = _angleEnd - _angleStart;
+	double  deltaangle = _angleEnd - _angleStart;
 	double coeff = (double)deltaangle / (double)deltarange;
 
-	double scaledValue = (int)((double)(value - _rangeStart) * coeff);
+	double scaledValue = ((double)(value - _rangeStart) * coeff);
 	return scaledValue;
 }
 
-void AngularMeter::SetValue(int val)
+void AngularMeter::SetValue(double val)
 {
 	_scaledValue = GetScaledValue( val );
 	_realVal = val;
 	Refresh();
 }
 
-void AngularMeter::SetWarningThreshold(int val){
+void AngularMeter::SetWarningThreshold(double val){
 
 	_scaledWarningValue = GetScaledValue( val );
 	_realWarningValue = val;
 	Refresh();
 }
 
-void AngularMeter::SetAlertThreshold(int val){
+void AngularMeter::SetAlertThreshold(double val){
 	_scaledAlertValue = GetScaledValue( val );
 	_realAlertValue = val;
 	Refresh();
@@ -211,7 +209,7 @@ void AngularMeter::ClearTicks(){
 	_minorTicks = 0;
 }
 
-void AngularMeter::AddMajorTick(int value){
+void AngularMeter::AddMajorTick(double value){
 
 	double scaledValue = GetScaledValue(value);
 	if (_majorTicks < MAX_TICKS - 1){
@@ -221,7 +219,7 @@ void AngularMeter::AddMajorTick(int value){
 	}
 }
 
-void AngularMeter::AddMinorTick(int value){
+void AngularMeter::AddMinorTick(double value){
 
 	double scaledValue = GetScaledValue(value);
 	if (_minorTicks < MAX_TICKS -1){
@@ -389,7 +387,7 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		dc.DrawLine((w / 2) - (int)tx + wOffset, (h / 2) - (int)ty + hOffset, (w / 2) - (int)dx + wOffset, (h / 2) - (int)dy + hOffset);
 
 		wxString s;
-		s.Printf("%d", _majorTickRealValues[i] / _majorTickDivisor);
+		s.Printf(VALUE_FORMAT[m_valuePrecision], _majorTickRealValues[i] / _majorTickDivisor);
 
 		int tw,th;
 		dc.GetTextExtent(s, &tw, &th);
@@ -428,7 +426,7 @@ void AngularMeter::DrawValue(wxDC &dc){
 	//draw label
 	int vw,vh;
 	wxString valuetext;
-	valuetext.Printf("%d",_realVal);
+	valuetext.Printf(VALUE_FORMAT[m_valuePrecision],_realVal);
 	dc.GetTextExtent(valuetext, &vw, &vh);
 	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (int)(((float)vh * 1.3f)));
 }
@@ -446,3 +444,29 @@ void AngularMeter::DrawLabel(wxDC &dc){
 	dc.GetTextExtent(_label, &lw, &lh);
 	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (int)(((float)lh * 0.7f)));
 }
+
+void AngularMeter::AddTicks(double majorTickIncrement, double minorTickIncrement){
+	ClearTicks();
+
+	for (double i = _rangeStart; i < _rangeEnd; i+=majorTickIncrement){
+		AddMajorTick(i);
+	}
+	AddMajorTick(_rangeEnd);
+
+	for (double i = _rangeStart + minorTickIncrement; i <= _rangeEnd; i+=minorTickIncrement){
+		AddMinorTick(i);
+	}
+}
+
+void AngularMeter::SetValuePrecision(unsigned int precision){
+
+	if (precision > MAX_VALUE_PRECISION) precision = MAX_VALUE_PRECISION;
+	m_valuePrecision = precision;
+}
+
+BEGIN_EVENT_TABLE(AngularMeter,wxWindow)
+	EVT_PAINT(AngularMeter::OnPaint)
+	EVT_SIZE(AngularMeter::OnSize)
+
+	EVT_ERASE_BACKGROUND(AngularMeter::OnEraseBackGround)
+END_EVENT_TABLE()
