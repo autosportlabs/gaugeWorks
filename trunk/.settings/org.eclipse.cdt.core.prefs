@@ -1,4 +1,4 @@
-#Fri Jul 03 11:53:41 PDT 2009
+#Fri Oct 22 21:30:53 PDT 2010
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
