@@ -8,7 +8,6 @@
 
 #ifndef _WX_LED_H_
 #define _WX_LED_H_
-
 #include <wx/window.h>
 #include <wx/bitmap.h>
 #include <wx/dcclient.h>
