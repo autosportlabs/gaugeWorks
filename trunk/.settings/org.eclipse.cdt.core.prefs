@@ -1,15 +1,9 @@
-#Fri Feb 17 11:11:29 PST 2012
+#Thu Apr 12 23:19:05 PDT 2012
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180=
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/delimiter=;
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/operation=replace
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/value=C\:/MinGW/bin
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/append=true
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/appendContributed=true
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371=
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/delimiter=;
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/operation=replace
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/value=C\:/MinGW/bin
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/append=true
 environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/appendContributed=true
 indexer/filesToParseUpFront=

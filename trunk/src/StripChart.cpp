@@ -130,9 +130,6 @@ int StripChart::GetLogBufferSize(){
 	return _dataBufferSize;
 }
 
-int GetLogBufferSize();
-
-
 void StripChart::ClearScales(){
 	_chartScales.Clear();
 	ClearLogItemTypes();	
