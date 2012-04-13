@@ -1,7 +1,17 @@
-#Fri Oct 22 21:30:53 PDT 2010
+#Fri Feb 17 11:11:29 PST 2012
 eclipse.preferences.version=1
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
-environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true">\r\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="C\:/MinGW/bin"/>\r\n</environment>\r\n
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180=
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/PATH/value=C\:/MinGW/bin
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/append=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.debug.1677442180/appendContributed=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371=
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/PATH/value=C\:/MinGW/bin
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/append=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.lib.release.1224088371/appendContributed=true
 indexer/filesToParseUpFront=
 indexer/indexAllFiles=false
 indexer/indexerId=org.eclipse.cdt.core.fastIndexer
