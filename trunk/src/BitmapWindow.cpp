@@ -16,7 +16,7 @@ END_EVENT_TABLE()
 
 BitmapWindow::BitmapWindow( 	wxWindow *parent, 
 							wxWindowID id, 
-							char ** xpm_bitmap, 
+							const char ** xpm_bitmap,
 							const wxPoint &pos, 
 							const wxSize &size )
 : wxWindow(parent, id, pos, size, 0)							
@@ -38,6 +38,7 @@ wxSize BitmapWindow::GetMinSize() const{
 
 void BitmapWindow::OnPaint(wxPaintEvent &event){
 	
+
 	int w,h ;
 	GetClientSize(&w,&h);
 
@@ -46,5 +47,6 @@ void BitmapWindow::OnPaint(wxPaintEvent &event){
 	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(),wxSOLID));
 	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(),wxSOLID));
 	dc.Clear();
-	dc.DrawBitmap(*_imageXpm, w -_imageXpm->GetWidth(),0);	
+
+	dc.DrawBitmap(*_imageXpm, w -_imageXpm->GetWidth(),0,true);
 }

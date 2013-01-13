@@ -14,7 +14,7 @@
 #define UNITS_LABEL_SPACING 	2
 #define GRID_SIZE 				20
 #define DEFAULT_ZOOM 			100
-#define MIN_ZOOM				25
+#define MIN_ZOOM				5
 #define DEFAULT_OFFSET_SECONDS	0
 
 //the data buffer
@@ -48,6 +48,8 @@ StripChart::StripChart(		wxWindow *parent,
 							: wxWindow(parent, id, pos, size),
 								_zoomPercentage(DEFAULT_ZOOM),
 								_showScale(true),
+								_showData(true),
+								_mouseIn(false),
 								_timespanMode(TIMESPAN_FROM_NOW),
 								_offsetFromEndSeconds(DEFAULT_OFFSET_SECONDS),
 								_currentDataBufferUBound(-1)
@@ -72,7 +74,7 @@ StripChart::~StripChart(){
 
 void StripChart::OnMouseEnter(wxMouseEvent &event){
 
-	_showData = true;
+	_mouseIn = true;
 	_mouseX = event.GetX();
 	_mouseY = event.GetY();
 	Refresh();
@@ -87,7 +89,7 @@ void StripChart::OnMouseMove(wxMouseEvent &event){
 
 void StripChart::OnMouseExit(wxMouseEvent &event){
 	
-	_showData = false;
+	_mouseIn = false;
 	Refresh();
 }
 
@@ -232,6 +234,13 @@ void StripChart::OnSize(wxSizeEvent &event){
 	Refresh();
 }
 
+bool StripChart::GetShowData(){
+	return _showData;
+}
+
+void StripChart::ShowData(bool showData){
+	_showData = showData;
+}
 
 void StripChart::OnPaint(wxPaintEvent &event){
 
@@ -262,16 +271,16 @@ void StripChart::OnPaint(wxPaintEvent &event){
 	unsigned int dataBufferSize = _dataBuffer.size();
 	
 	
-	float zoomFactor = (float)_zoomPercentage / 100;
+	double zoomFactor = ((float)_zoomPercentage) / 100.0;
 	
 	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxLIGHT_GREY, 1, wxSHORT_DASH));
 	
 	int dataBufferUBound = _currentDataBufferUBound;
 	
-	float currentX = (float)w;
+	float currentX = (double)w;
 	for (int i = dataBufferUBound; i >= 0; i--){		
 		if (_dataBuffer[i].IsMarked()){
-			dc.DrawLine((int)currentX,0,(int)currentX,h);					
+			dc.DrawLine(currentX,0,currentX,h);
 		}	
 		currentX -= zoomFactor;
 	}
@@ -291,15 +300,15 @@ void StripChart::OnPaint(wxPaintEvent &event){
 		
 		dc.SetPen(*wxThePenList->FindOrCreatePen(itemType->lineColor, 1, wxSOLID));
 		
-		int lastX = (int)currentX;
-		int lastY;
+		double lastX = currentX;
+		double lastY;
 		
 		if (dataBufferSize > 0){
 			
 			StripChartLogItem logItem = _dataBuffer[dataBufferUBound];
 			double loggedValue = logItem[key];
 			double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
-			lastY = h - (int)(((double)h) * percentageOfMax);
+			lastY = ((double)h) - (((double)h) * percentageOfMax);
 			
 			for (int i = dataBufferUBound; i >= 0; i--){
 				StripChartLogItem logItem = _dataBuffer[i];
@@ -307,17 +316,17 @@ void StripChart::OnPaint(wxPaintEvent &event){
 				
 				double percentageOfMax = (loggedValue - minValue) / (maxValue - minValue);
 				
-				int y = h - (int)(((double)h) * percentageOfMax);
+				int y = h - (((double)h) * percentageOfMax);
 				
-				dc.DrawLine(lastX, lastY, (int)currentX, y);
-				lastX = (int)currentX;
+				dc.DrawLine(lastX, lastY, currentX, y);
+				lastX = currentX;
 				lastY = y;
 				currentX -= zoomFactor;		
 			}
 		}
 	}
 
-	if (_showData) DrawCurrentValues(dc);
+	if (_mouseIn && _showData) DrawCurrentValues(dc);
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
 	

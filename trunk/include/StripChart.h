@@ -95,7 +95,7 @@ class LogItemType{
 		wxString 	typeKey;
 };
 
-WX_DECLARE_STRING_HASH_MAP(int, LogItem);
+WX_DECLARE_STRING_HASH_MAP(double, LogItem);
 
 WX_DECLARE_OBJARRAY(ChartScale, ChartScales);
 WX_DECLARE_STRING_HASH_MAP(LogItemType*, LogItemTypes);
@@ -174,6 +174,9 @@ class StripChart : public wxWindow
 		bool GetShowScale();
 		void ShowScale(bool showScale);
 
+		bool GetShowData();
+		void ShowData(bool showData);
+
 		int GetOffsetFromEndSeconds();
 		void SetOffsetFromEndSeconds(int seconds);
 
@@ -206,8 +209,9 @@ class StripChart : public wxWindow
 		wxBitmap 			*_memBitmap;
 		wxColor				_backgroundColor;
 		bool				_showScale;
-
 		bool				_showData;
+
+		bool				_mouseIn;
 		int					_mouseX;
 		int					_mouseY;
 		int					_timespanMode;
