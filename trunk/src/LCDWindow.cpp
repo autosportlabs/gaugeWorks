@@ -27,7 +27,7 @@ END_EVENT_TABLE()
 LCDDisplay::LCDDisplay( wxWindow *parent,
 						const wxPoint& pos,
 						const wxSize& size )
-: wxWindow( parent, -1, pos, size )
+: wxControl( parent, -1, pos, size )
 {
 	mSegmentLen = 40;
 	mSegmentWidth = 10;

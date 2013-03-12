@@ -26,7 +26,7 @@
 
 #define	DEFAULT_VALUE_PRECISION 0
 #define MAX_VALUE_PRECISION 4
-static const char * VALUE_FORMAT[MAX_VALUE_PRECISION + 1] = {"%4.0f","%4.1f","%4.2f","%4.3f","%4.4f"};
+static const char * VALUE_FORMAT[MAX_VALUE_PRECISION + 1] = {"% 0.0f","% 0.1f","% 0.2f","% 0.3f","% 0.4f"};
 
 //IMPLEMENT_DYNAMIC_CLASS(kwxAngularMeter, wxWindow)
 
@@ -192,12 +192,13 @@ void AngularMeter::OnPaint(wxPaintEvent &event)
 
 	//indicatore lancetta
 
-	DrawNeedle(dc);
 
 	DrawLabel(dc);
 
 	//testo valore
 	if (_shouldDrawCurrent) DrawValue(dc);
+
+	DrawNeedle(dc);
 
 	//blit into the real DC
 	old_dc.Blit(0,0,_currentWidth,_currentHeight,&dc,0,0);
@@ -371,7 +372,9 @@ void AngularMeter::DrawTicks(wxDC &dc)
 	dc.SetPen(*pen);
 
 	int majorTickLineLength = w / 20;
-	dc.SetFont(_majorTickFont);
+	wxFont drawFont = _majorTickFont;
+	drawFont.SetPointSize(w / 17);
+	dc.SetFont(drawFont);
 	dc.SetTextForeground(_majorTickTextColor);
 
 	for (int i = 0; i < _majorTicks; i++){
@@ -392,8 +395,8 @@ void AngularMeter::DrawTicks(wxDC &dc)
 		int tw,th;
 		dc.GetTextExtent(s, &tw, &th);
 
-		int textX = (int)(cos(val) * ((h / 2) - (majorTickLineLength * 2)));	//punto testo
-		int textY = (int)(sin(val) * ((h / 2) - (majorTickLineLength * 2)));
+		int textX = (int)(cos(val) * ((h / 2) - (majorTickLineLength * 2.5)));	//punto testo
+		int textY = (int)(sin(val) * ((h / 2) - (majorTickLineLength * 2.1)));
 
 		dc.DrawText(s, (w/2) - textX - (tw /2) + wOffset, (h/2) - textY - (th / 2) + hOffset);
 
@@ -418,31 +421,37 @@ void AngularMeter::DrawTicks(wxDC &dc)
 void AngularMeter::DrawValue(wxDC &dc){
 
 	dc.SetTextForeground(_valueTextColor);
-	dc.SetFont(_valueFont);
 
 	int w,h;
 	GetClientSize(&w, &h);
+
+	wxFont drawFont = _valueFont;
+	drawFont.SetPointSize((h > w ? w : h) / 15);
+	dc.SetFont(drawFont);
 
 	//draw label
 	int vw,vh;
 	wxString valuetext;
 	valuetext.Printf(VALUE_FORMAT[m_valuePrecision],_realVal);
 	dc.GetTextExtent(valuetext, &vw, &vh);
-	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) - (int)(((float)vh * 1.3f)));
+	dc.DrawText(valuetext, (w / 2) - (vw / 2), (h / 2) + (int)(((float)vh * 0.7)));
 }
 
 void AngularMeter::DrawLabel(wxDC &dc){
 
 	dc.SetTextForeground(_labelTextColor);
-	dc.SetFont(_labelFont);
 
 	int w,h;
 	GetClientSize(&w, &h);
 
+	wxFont drawFont = _labelFont;
+	drawFont.SetPointSize((h > w ? w : h) / 15);
+	dc.SetFont(drawFont);
+
 	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);
-	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (int)(((float)lh * 0.7f)));
+	dc.DrawText(_label, (w / 2) - (lw / 2), (h / 2) + (int)(((float)lh * 1.6)));
 }
 
 void AngularMeter::AddTicks(double majorTickIncrement, double minorTickIncrement){

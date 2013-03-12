@@ -19,7 +19,7 @@ struct wxDigitData
 };
 
 
-class LCDDisplay : public wxWindow
+class LCDDisplay : public wxControl
 {
 
 protected:
