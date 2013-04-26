@@ -12,10 +12,11 @@
 class BitmapWindow : public wxWindow{
 
 	public:
-		BitmapWindow(){}
+		//BitmapWindow();
 	    BitmapWindow( wxWindow *parent,wxWindowID id, const char ** xpm_bitmap, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize );
 	    ~BitmapWindow();
 	    
+	    void SetBitmap(const char ** newXpm);
 	    void OnPaint( wxPaintEvent &event );
 	    void OnSize( wxSizeEvent &event);
 	    wxSize GetMinSize() const;

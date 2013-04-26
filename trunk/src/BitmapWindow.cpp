@@ -13,6 +13,7 @@ BEGIN_EVENT_TABLE(BitmapWindow,wxWindow)
 	
 END_EVENT_TABLE()
 
+//BitmapWindow::BitmapWindow() : _imageXpm(NULL){}
 
 BitmapWindow::BitmapWindow( 	wxWindow *parent, 
 							wxWindowID id, 
@@ -27,6 +28,13 @@ BitmapWindow::BitmapWindow( 	wxWindow *parent,
 BitmapWindow::~BitmapWindow(){
 	delete (_imageXpm);	
 }
+
+void BitmapWindow::SetBitmap(const char ** newXpm){
+	if (_imageXpm) delete (_imageXpm);
+	_imageXpm = new wxBitmap(newXpm);
+	Refresh();
+}
+
 
 void BitmapWindow::OnSize(wxSizeEvent &event){
 	Refresh();
