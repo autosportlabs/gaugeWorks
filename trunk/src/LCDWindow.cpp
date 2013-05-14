@@ -27,7 +27,7 @@ END_EVENT_TABLE()
 LCDDisplay::LCDDisplay( wxWindow *parent,
 						const wxPoint& pos,
 						const wxSize& size )
-: wxControl( parent, -1, pos, size )
+: wxWindow( parent, -1, pos, size )
 {
 	mSegmentLen = 40;
 	mSegmentWidth = 10;
@@ -36,7 +36,7 @@ LCDDisplay::LCDDisplay( wxWindow *parent,
 	mNumberDigits = 6;
 
 	mLightColour = wxColour( 0, 255, 0 );
-	mGrayColour = wxColour( 0, 40, 0 );
+	mGrayColour = wxColour( 0, 20, 0 );
 	_labelTextColor = *wxWHITE;
 	_labelFont = *wxSWISS_FONT;
 
@@ -50,20 +50,29 @@ LCDDisplay::~LCDDisplay()
 
 }
 
-
 void LCDDisplay::OnPaint( wxPaintEvent &event )
 {
 	wxPaintDC dc( this );
+	int w,h;
+	GetClientSize(&w, &h);
+	dc.SetTextForeground(_labelTextColor);
+	_labelFont.SetPointSize(h / 8);
+	dc.SetFont(_labelFont);
 
-	DrawLabel( dc );
 	int dw = GetClientSize().GetWidth();
 	int dh = GetClientSize().GetHeight();
 
 	int bw = GetBitmapWidth();
 	int bh = GetBitmapHeight();
 
+	int lw,lh;
+	dc.GetTextExtent(_label, &lw, &lh);
+	lh  = lh * 2;
+
 	double xs = ( double ) dw / bw;
-	double ys = ( double ) dh / bh;
+	double ys = ( double ) (dh - lh) / bh;
+
+	DrawLabel( dc );
 
 	double as = xs > ys? ys : xs;
 
@@ -82,14 +91,9 @@ void LCDDisplay::OnSize( wxSizeEvent &event )
 
 void LCDDisplay::DrawLabel(wxDC &dc){
 
-	dc.SetTextForeground(_labelTextColor);
-	dc.SetFont(_labelFont);
-
 	int w,h;
 	GetClientSize(&w, &h);
 
-
-	//draw label
 	int lw,lh;
 	dc.GetTextExtent(_label, &lw, &lh);
 

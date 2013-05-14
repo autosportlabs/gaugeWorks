@@ -19,7 +19,7 @@ struct wxDigitData
 };
 
 
-class LCDDisplay : public wxControl
+class LCDDisplay : public wxWindow
 {
 
 protected:
@@ -94,7 +94,7 @@ public:
 	wxColour GetLightColour( void );
 	wxColour GetGrayColour( void );
 
-	void SetLabel(wxString label){ _label = label; };
+	void SetLabel(wxString label){ _label = label; Refresh();};
 	void SetLabelTextColor(wxColour color){ _labelTextColor = color; };
 	void SetLabelFont(wxFont &font) { _labelFont = font; };
 
